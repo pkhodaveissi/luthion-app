@@ -23,7 +23,7 @@ body {
 /* Components */
 @layer components {
   .btn {
-    @apply p-3 bg-surface text-white rounded-sm active:opacity-80 active:scale-95 transition-all duration-150 ease-in-out;
+    @apply p-3 bg-surface text-white rounded-sm active:scale-95 transition-all duration-150 ease-in-out;
   }
 
   .btn-wide {

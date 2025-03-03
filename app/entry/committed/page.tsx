@@ -1,15 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { RotateCcw, Lightbulb, Hourglass, CheckCircle, Crop, X, Circle } from "lucide-react";
+import { RotateCcw, Lightbulb, Hourglass, CheckCircle, Crop, X } from "lucide-react";
 import GlobalHeader from "@/components/GlobalHeader";
 import MainNavButton from "@/components/MainNavButton";
 import BlurContainer from "@/components/BlurContainer";
 import MainNavDrawer from "@/components/MainNavDrawer";
 
 export default function ReflectPage() {
-  const router = useRouter();
   const goalText = "Send an email to my organization, initiating my notice period.";
 
   const [showOptions, setShowOptions] = useState(false);

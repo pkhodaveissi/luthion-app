@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Circle, Pen } from "lucide-react";
+import { Circle } from "lucide-react";
 import GlobalHeader from "@/components/GlobalHeader";
 import BlurContainer from "@/components/BlurContainer";
 import MainNavButton from "@/components/MainNavButton";
