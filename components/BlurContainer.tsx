@@ -14,11 +14,10 @@ export default function BlurContainer({ children }: BlurContainerProps) {
   // (You can tweak the Tailwind classes for the level of blur/brightness you want.)
   return (
     <div
-      className={
-        navOpen
-          ? "h-full w-full transition ease-in-out duration-200 filter blur-sm"
+      className={`h-full w-full ${ navOpen
+          ? " transition ease-in-out duration-200 filter blur-sm"
           : "transition ease-in-out duration-200"
-      }
+      }`}
     >
       {children}
     </div>

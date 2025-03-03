@@ -4,7 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { RotateCcw, Lightbulb, Hourglass, CheckCircle, Crop, X, Circle } from "lucide-react";
 import GlobalHeader from "@/components/GlobalHeader";
-import MainNav, { BlurContainer } from "@/components/MainNav";
+import MainNavButton from "@/components/MainNavButton";
+import BlurContainer from "@/components/BlurContainer";
+import MainNavDrawer from "@/components/MainNavDrawer";
 
 export default function ReflectPage() {
   const router = useRouter();
@@ -49,17 +51,16 @@ export default function ReflectPage() {
     <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6">
       <GlobalHeader />
       {/* Goal Display (Non-editable) */}
-      
+
       <BlurContainer>
-      
-      <div className="flex flex-col justify-start items-start text-left h-full pb-4">
-        <p className="text-xl italic text-text-primary">{goalText}</p>
-      </div>
+
+        <div className="flex flex-col justify-start items-start text-left h-full pb-4">
+          <p className="text-xl italic text-text-primary">{goalText}</p>
+        </div>
       </BlurContainer>
 
       {/* Action Buttons */}
-      <div className="flex w-full max-w-md flex-col items-center gap-y-2" ref={optionsRef}>
-      <BlurContainer>
+      <div className="flex w-full flex-col items-center gap-y-2" ref={optionsRef}>
         {/* Reflection Options (Expanding Above the Reflect Button) */}
         {showOptions && (
           <div className="w-full flex flex-col gap-y-2 mb-2 transition-all duration-200">
@@ -75,20 +76,26 @@ export default function ReflectPage() {
             ))}
           </div>
         )}
+        <div className="relative w-full">
+        {/* 
+          Wrap ONLY what you want blurred in <BlurContainer>. 
+          By leaving MainNavDrawer outside it, the drawer remains clear. 
+        */}
+        <BlurContainer>
+          <div className="flex w-full justify-between items-center gap-x-4">
+            {/* Reflect Button (Toggles Options) */}
+            <button
+              onClick={() => setShowOptions((prev) => !prev)}
+              className="btn btn-wide flex items-center justify-center"
+            >
+              {showOptions ? <X size={32} className="mr-2" /> : <Crop size={32} className="mr-2" />}
+              Reflect
+            </button>
+            <MainNavButton />
+          </div>
         </BlurContainer>
-
-        <div className="relative flex w-full max-w-md justify-between items-center gap-x-4">
-          {/* Reflect Button (Toggles Options) */}
-          <button
-            onClick={() => setShowOptions((prev) => !prev)}
-            className="btn btn-wide flex items-center justify-center"
-          >
-            {showOptions ? <X size={32} className="mr-2" /> : <Crop size={32} className="mr-2" />}
-            Reflect
-          </button>
-
-          {/* Commit Button (Visual Indicator) */}
-          <MainNav />
+        {/* Nav Button */}
+        <MainNavDrawer />
         </div>
       </div>
     </div>

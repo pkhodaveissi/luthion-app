@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
 import { MainNavProvider } from "@/components/MainNavContext";
 import "@/app/globals.css";
-import MainNavDrawer from "@/components/MainDrawer";
 
 const ralewayFont = Raleway({
   variable: "--font-raleway",
@@ -25,7 +24,6 @@ export default function RootLayout({
         className={`${ralewayFont.variable} antialiased bg-background text-white font-raleway h-dvh flex flex-col`}
       >
         <MainNavProvider>
-          <MainNavDrawer />
           <div className="w-full max-w-[512px] mx-auto">{children}</div>
         </MainNavProvider>
         {/* <Navigation /> */}
