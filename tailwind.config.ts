@@ -9,8 +9,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "#0E0E0E", // Default dark mode background
+        foreground: "#ededed", // Default text color
+        text: {
+          muted: "#B3B3B3", // Lighter gray text
+          primary: "#FFFFFF", // Pure white text
+          secondary: "#F5F5F5", // Slightly off-white text
+        },
+        surface: "#1C1C1C", // Buttons & card items background
+        border: "#B3B3B3", // Borders
+        chart: {
+          filled: "#D9D9D9", // Chart bar fill (completed part)
+        },
       },
     },
   },

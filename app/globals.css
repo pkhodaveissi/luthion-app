@@ -3,19 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0e0e0e;
+  --foreground: #ededed;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #0e0e0e;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Raleway, Helvetica, sans-serif;
+}
+
+/* Components */
+@layer components {
+  .btn {
+    @apply p-3 bg-surface text-white rounded-sm active:opacity-80 active:scale-95 transition-all duration-150 ease-in-out;
+  }
+
+  .btn-wide {
+    @apply w-full py-3 font-medium;
+  }
 }
