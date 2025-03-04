@@ -9,7 +9,7 @@ const ralewayFont = Raleway({
 });
 
 export const metadata: Metadata = {
-  title: "Luthio App",
+  title: "Luthion App",
   description: "Your day, one step at a time!",
 };
 
