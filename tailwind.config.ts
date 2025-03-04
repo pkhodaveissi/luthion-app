@@ -22,6 +22,9 @@ export default {
           filled: "#D9D9D9", // Chart bar fill (completed part)
         },
       },
+      boxShadow: {
+        'border': '0 0px 2px rgba(221, 221, 221, 0.40)',
+      },
     },
   },
   plugins: [],
