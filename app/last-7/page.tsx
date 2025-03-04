@@ -64,7 +64,7 @@ export default function Last7Page() {
   // Close options when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (optionsRef.current && !optionsRef.current.contains(event.target as Node)) {
+      if (optionsRef.current && !(optionsRef.current.contains(event.target as Node))) {
         setSelectedEntry(null);
       }
     }
@@ -79,18 +79,23 @@ export default function Last7Page() {
 
   // Handle selection of an entry
   const handleEntryClick = (index: number, event: React.MouseEvent) => {
-    event.stopPropagation();
+    if(selectedEntry) {
+      setSelectedEntry(null)
+    } 
+    else {
     const entryElement = event.currentTarget;
     const rect = entryElement.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
     const shouldOpenAbove = spaceBelow < 317; // Open above if not enough space below
-    setSelectedEntry(shouldOpenAbove ? -index-1 : index+1); // Store negative index for above
+    setSelectedEntry(shouldOpenAbove ? -index - 1 : index + 1); // Store negative index for above
+    }
   };
 
   // Handle selection of a reflection option
-  const handleReflectionSelect = (option: string) => {
+  const handleReflectionSelect = (e: React.MouseEvent, option: string) => {
     console.log("Selected reflection:", option);
     setSelectedEntry(null);
+    e.stopPropagation();
   };
 
   return (
@@ -99,7 +104,9 @@ export default function Last7Page() {
 
       <BlurContainer>
         {/* List container */}
-        <div className="flex flex-col grow gap-3 pb-4 justify-end relative">
+        <div
+          ref={optionsRef}
+          className="flex flex-col grow gap-3 pb-4 justify-end relative">
           {entries.map((entry, index) => {
             const isSelected = Math.abs(selectedEntry!) === index + 1;
             const openAbove = selectedEntry! < 0;
@@ -122,13 +129,12 @@ export default function Last7Page() {
                     className={`absolute left-0 w-full flex flex-col gap-y-2 mt-2 bg-background p-3 rounded-sm shadow-lg transition-all duration-200 
                       ${openAbove ? "bottom-full mb-2" : "top-full mt-2"}
                     `}
-                    ref={optionsRef}
                   >
                     {reflectionOptions.map((option, idx) => (
                       <button
                         key={idx}
                         className="btn flex items-center justify-start w-full"
-                        onClick={() => handleReflectionSelect(option.text)}
+                        onClick={(e) => handleReflectionSelect(e, option.text)}
                       >
                         {option.icon}
                         <span className="ml-2">{option.text}</span>
