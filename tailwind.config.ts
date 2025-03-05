@@ -10,7 +10,8 @@ export default {
     extend: {
       colors: {
         background: "#0E0E0E", // Default dark mode background
-        foreground: "#ededed", // Default text color
+        foreground: "#F5F5F5", // Default text color
+
         text: {
           muted: "#B3B3B3", // Lighter gray text
           primary: "#FFFFFF", // Pure white text

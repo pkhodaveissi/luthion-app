@@ -2,14 +2,15 @@
 
 import { usePathname } from "next/navigation";
 import { useMainNav } from "@/components/MainNavContext";
-import { LucideIcon, Pen, Circle, CircleDot, Tally5, CircleUser, Info } from "lucide-react";
+import { LucideIcon, Pen, Circle, CircleDot, Tally5, List, CircleUser, Info } from "lucide-react";
 
 // Define a mapping of routes to Lucide icons
 const iconMap: Record<string, LucideIcon> = {
   "/entry": Pen,
   "/entry/editing": Circle,
   "/entry/committed": CircleDot,
-  "/last-7": Tally5,
+  "/last-7": List,
+  "/rank": Tally5,
 };
 
 export default function MainNavButton() {
