@@ -1,6 +1,10 @@
 {
   "name": "TypeScript Node Dev Container",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:latest",
+  "runArgs": [
+    "--network", "bridge",
+    "-p", "3000:3000"
+  ],
   "forwardPorts": [3000],
   "remoteUser": "node",
   "features": {
