@@ -80,7 +80,7 @@ export default function RankPage() {
             <Bar dataKey="score" fill="#D9D9D9" background={{ fill: '#1C1C1C' }} radius={2} />
             <CartesianGrid strokeDasharray="2" horizontalCoordinatesGenerator={(props) => {
               const step = (props.height - 4) / 4; // Divide height into 4 equal spaces
-              return Array.from({ length: 5 }, (_, i) => i * step);
+              return Array.from({ length: 3 }, (_, i) => (i+1) * step);
             }} vertical={false} className="opacity-40" />
           </BarChart>
         </ResponsiveContainer>
