@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
 import { MainNavProvider } from "@/components/MainNavContext";
+import ConfigureAmplify from "@/utils/amplify-config";
 import "@/app/globals.css";
 
 const ralewayFont = Raleway({
@@ -24,7 +25,9 @@ export default function RootLayout({
         className={`${ralewayFont.variable} antialiased bg-background text-white font-raleway h-dvh flex flex-col`}
       >
         <MainNavProvider>
-          <div className="w-full max-w-[512px] mx-auto">{children}</div>
+          <div className="w-full max-w-[512px] mx-auto">
+            <ConfigureAmplify />
+            {children}</div>
         </MainNavProvider>
         {/* <Navigation /> */}
       </body>
