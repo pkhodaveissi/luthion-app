@@ -8,12 +8,11 @@ import BlurContainer from "@/components/BlurContainer";
 import MainNavButton from "@/components/MainNavButton";
 import MainNavDrawer from "@/components/MainNavDrawer";
 import Logout from "@/components/Logout";
-import {amplifyClient} from "@/utils/amplify-client-utils"
-import { Schema } from "@/amplify/data/resource";
+import {amplifyClient, ModelListType} from "@/utils/amplify-client-utils"
 
 export function useUsers() {
   // Explicitly define the types for your state variables
-  const [users, setUsers] = useState<Array<Schema["User"]["type"]>>();
+  const [users, setUsers] = useState<ModelListType<"User">>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
