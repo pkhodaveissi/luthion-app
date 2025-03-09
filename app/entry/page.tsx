@@ -7,6 +7,7 @@ import GlobalHeader from "@/components/GlobalHeader";
 import BlurContainer from "@/components/BlurContainer";
 import MainNavButton from "@/components/MainNavButton";
 import MainNavDrawer from "@/components/MainNavDrawer";
+import Logout from "@/components/Logout";
 
 export default function EntryPage() {
   return (
@@ -22,6 +23,7 @@ export default function EntryPage() {
           <EntryActions />
         </BlurContainer>
         <MainNavDrawer />
+        <Logout />
       </div>
     </div>
   );

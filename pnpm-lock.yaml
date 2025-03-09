@@ -12,6 +12,9 @@ importers:
 
   .:
     dependencies:
+      '@aws-amplify/adapter-nextjs':
+        specifier: ^1.5.4
+        version: 1.5.4(aws-amplify@6.13.3)(next@15.2.0(@babel/core@7.26.9)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
       '@aws-amplify/ui-react':
         specifier: ^6.9.3
         version: 6.9.3(@aws-amplify/core@6.10.3)(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)(aws-amplify@6.13.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(xstate@4.38.3)
@@ -102,6 +105,12 @@ packages:
     hasBin: true
     peerDependencies:
       graphql: '*'
+
+  '@aws-amplify/adapter-nextjs@1.5.4':
+    resolution: {integrity: sha512-R0hlTDHTwRTt/3H6g/wBjsrd6DpsAtGiMKhyKA2rStA+nbrX6HC3hB8OB81gGV/ilNCRMTQTmB0sY+6Xgk7QbQ==}
+    peerDependencies:
+      aws-amplify: ^6.13.1
+      next: '>=13.5.0 <16.0.0'
 
   '@aws-amplify/analytics@7.0.72':
     resolution: {integrity: sha512-CG9PJ2ZH5KAJQmgLzuHkfPQN+XFnMcCULGoJDlcWjGu6UJ2HparNDB2t6maW2pIdhlEADAvY/5f/yt7E6XSABw==}
@@ -2982,6 +2991,10 @@ packages:
     engines: {node: '>= 14.15.0'}
     hasBin: true
 
+  aws-jwt-verify@4.0.1:
+    resolution: {integrity: sha512-kzvi71eD3w/mCpYRUY7cz6DX4bfYihGdI2yV3FYQ2JuZZenqAqDPz0gWj0ew6vlAtdEVBNb7p+Dm2TAIxpVYMA==}
+    engines: {node: '>=14.0.0'}
+
   axe-core@4.10.2:
     resolution: {integrity: sha512-RE3mdQ7P3FRSe7eqCWoeQ/Z9QXrtniSjp1wUjt5nRC3WIpz5rSCve6o3fsZ2aCpJtrZjSZgjwXAoTO5k4tEI0w==}
     engines: {node: '>=4'}
@@ -5639,6 +5652,12 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  '@aws-amplify/adapter-nextjs@1.5.4(aws-amplify@6.13.3)(next@15.2.0(@babel/core@7.26.9)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))':
+    dependencies:
+      aws-amplify: 6.13.3
+      aws-jwt-verify: 4.0.1
+      next: 15.2.0(@babel/core@7.26.9)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
   '@aws-amplify/analytics@7.0.72(@aws-amplify/core@6.10.3)':
     dependencies:
@@ -10318,6 +10337,8 @@ snapshots:
   aws-cdk@2.1002.0:
     optionalDependencies:
       fsevents: 2.3.2
+
+  aws-jwt-verify@4.0.1: {}
 
   axe-core@4.10.2: {}
 
