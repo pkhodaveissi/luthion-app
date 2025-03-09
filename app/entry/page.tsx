@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Circle } from "lucide-react";
 import GlobalHeader from "@/components/GlobalHeader";
@@ -8,8 +8,38 @@ import BlurContainer from "@/components/BlurContainer";
 import MainNavButton from "@/components/MainNavButton";
 import MainNavDrawer from "@/components/MainNavDrawer";
 import Logout from "@/components/Logout";
+import {amplifyClient} from "@/utils/amplify-client-utils"
+import { Schema } from "@/amplify/data/resource";
+
+export function useUsers() {
+  // Explicitly define the types for your state variables
+  const [users, setUsers] = useState<Array<Schema["User"]["type"]>>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { data: fetchedUsers } = await amplifyClient.models.User.list();
+        setUsers(fetchedUsers);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  return { users, isLoading, error };
+}
 
 export default function EntryPage() {
+  const { users, isLoading, error } = useUsers();
+  console.log('users', users)
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6 relative">
       <GlobalHeader />

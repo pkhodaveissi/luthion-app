@@ -1,31 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runWithAmplifyServerContext } from "./utils/auth-middleware-utils";
+
 import { fetchAuthSession } from "aws-amplify/auth/server";
 
+import { runWithAmplifyServerContext } from "@/utils/amplify-server-utils";
+
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+  const response = NextResponse.next();
 
   const authenticated = await runWithAmplifyServerContext({
     nextServerContext: { request, response },
-    operation: async (ctx) => {
+    operation: async (contextSpec) => {
       try {
-        const session = await fetchAuthSession(ctx, {})
+        const session = await fetchAuthSession(contextSpec, {});
         return session.tokens !== undefined;
       } catch (error) {
         console.log(error);
-        return false
+        return false;
       }
-    }
-  })
-  if (!authenticated) {
-    return NextResponse.redirect(new URL("/signup", request.url))
+    },
+  });
+
+  if (authenticated) {
+    return response;
   }
-  return response;
+
+  return NextResponse.redirect(new URL("/login", request.url));
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|signup).*)"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - login
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|login).*)",
+  ],
 };
-
-export const allowedDomains = ['localhost', '192.168.178.115']; // Add your IP
-

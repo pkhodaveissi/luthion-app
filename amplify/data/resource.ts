@@ -8,18 +8,20 @@ and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
   User: a.model({
+    id: a.id(), // Auto-generated, optimized for DB operations
+    cognitoSub: a.string().required(), // Indexed for quick lookups
     email: a.string().required(),
     name: a.string().required(),
     isGuest: a.boolean().required(),
     guestId: a.string(),
-    createdAt: a.datetime().required(),
-    updatedAt: a.datetime().required(),
+    createdAt: a.datetime(),
+    updatedAt: a.datetime(),
     goals: a.hasMany('Goal', 'userId'),
     reflections: a.hasMany('Reflection', 'userId'),
     dailyScores: a.hasMany('DailyScore', 'userId'),
     weeklyScores: a.hasMany('WeeklyScore', 'userId'),
     userRank: a.hasOne('UserRank', 'userId'),
-  }),
+  }).secondaryIndexes((index) => [index("cognitoSub")]),
 
   Goal: a.model({
     userId: a.id(),
