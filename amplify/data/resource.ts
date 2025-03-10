@@ -16,8 +16,9 @@ const schema = a.schema({
     guestId: a.string(),
     createdAt: a.datetime(),
     updatedAt: a.datetime(),
+    lastCommittedAt: a.datetime(),
+    lastReflectionAt: a.datetime(), // New fiel
     goals: a.hasMany('Goal', 'userId'),
-    reflections: a.hasMany('Reflection', 'userId'),
     dailyScores: a.hasMany('DailyScore', 'userId'),
     weeklyScores: a.hasMany('WeeklyScore', 'userId'),
     userRank: a.hasOne('UserRank', 'userId'),
@@ -28,33 +29,39 @@ const schema = a.schema({
     user: a.belongsTo('User', 'userId'),
     text: a.string().required(),
     status: a.enum(['draft', 'committed', 'reflected']), // Updated status options
-    createdAt: a.datetime().required(),
-    lockedAt: a.datetime(), // New field
+    createdAt: a.datetime(),
+    committedAt: a.datetime(), // When the 5-minute timer started
+    lockedAt: a.datetime(),    // When the goal was locked after editing
     reflectedAt: a.datetime(),
-    updatedAt: a.datetime().required(),
+    updatedAt: a.datetime(),
     reflection: a.hasOne('Reflection', 'goalId'),
   }),
 
   Reflection: a.model({
-    userId: a.id(),
-    user: a.belongsTo('User', 'userId'),
     goalId: a.id(),
     goal: a.belongsTo('Goal', 'goalId'),
     reflectionOptionId: a.id(),
     reflectionOption: a.belongsTo('ReflectionOption', 'reflectionOptionId'),
     score: a.integer().required(),
-    createdAt: a.datetime().required(),
-    updatedAt: a.datetime().required(),
+    createdAt: a.datetime(),
+    updatedAt: a.datetime(),
   }),
-
+  ReflectionOption: a.model({
+    text: a.string().required(),
+    score: a.integer().required(),
+    isActive: a.boolean().required(),
+    reflectionType: a.enum(['tried_life_happened', 'priorities_shifted', 'not_today', 'did_it']),
+    reflections: a.hasMany('Reflection', 'reflectionOptionId'),
+  }),
+  
   DailyScore: a.model({
     userId: a.id(),
     user: a.belongsTo('User', 'userId'),
     date: a.datetime().required(),
     score: a.integer().required(),
     reflectionCount: a.integer().required(),
-    createdAt: a.datetime().required(),
-    updatedAt: a.datetime().required(),
+    createdAt: a.datetime(),
+    updatedAt: a.datetime(),
     weeklyScore: a.belongsTo('WeeklyScore', 'weeklyScoreId'),
     weeklyScoreId: a.id(),
   }),
@@ -66,8 +73,8 @@ const schema = a.schema({
     weekEnd: a.datetime().required(),
     score: a.integer().required(),
     isComplete: a.boolean().required(),
-    createdAt: a.datetime().required(),
-    updatedAt: a.datetime().required(),
+    createdAt: a.datetime(),
+    updatedAt: a.datetime(),
     dailyScores: a.hasMany('DailyScore', 'weeklyScoreId'),
   }),
 
@@ -88,15 +95,8 @@ const schema = a.schema({
     currentScore: a.integer().required(),
     progressInTier: a.float().required(),
     lastCalculatedAt: a.datetime().required(),
-    createdAt: a.datetime().required(),
-    updatedAt: a.datetime().required(),
-  }),
-
-  ReflectionOption: a.model({
-    text: a.string().required(),
-    score: a.integer().required(),
-    reflectionType: a.enum(['tried_life_happened', 'priorities_shifted', 'not_today', 'did_it']),
-    reflections: a.hasMany('Reflection', 'reflectionOptionId'),
+    createdAt: a.datetime(),
+    updatedAt: a.datetime(),
   }),
 }).authorization((allow) => [
   allow.owner().to(['create', 'read', 'update', 'delete']),
@@ -117,7 +117,7 @@ Go to your frontend source code. From your client-side code, generate a
 Data client to make CRUDL requests to your table. (THIS SNIPPET WILL ONLY
 WORK IN THE FRONTEND CODE FILE.)
 
-Using JavaScript or Next.js React Server Components, Middleware, Server 
+Using JavaScript or Next.js React Server Components, Middleware, Server
 Actions or Pages Router? Review how to generate Data clients for those use
 cases: https://docs.amplify.aws/gen2/build-a-backend/data/connect-to-API/
 =========================================================================*/

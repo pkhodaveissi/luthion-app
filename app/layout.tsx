@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
 import { MainNavProvider } from "@/components/MainNavContext";
-import ConfigureAmplify from "@/utils/amplify-config";
+import ConfigureAmplify from "@/lib/utils/amplify-config";
 import "@/app/globals.css";
 
 const ralewayFont = Raleway({
