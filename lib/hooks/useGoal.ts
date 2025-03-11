@@ -94,7 +94,7 @@ export function useGoal() {
       setLoading(true);
       setError(null);
       const updatedGoal = await GoalService.resetGoalEditing(id);
-      console.log('fuck me inside reset hook', updatedGoal)
+      console.log('fuck inside reset hook', updatedGoal)
 
       setGoal(updatedGoal);
       return updatedGoal;

@@ -44,10 +44,10 @@ export default function EntryPage() {
       // If there's an existing goal in draft state, update it
       // Otherwise create a new one
       if (hasActiveGoal && goal?.status === 'draft' && !goal.committedAt) {
-        console.log('fuck me update')
+        console.log('fuck goal text update')
         await updateGoalText(goalText);
       } else {
-        console.log('fuck me create')
+        console.log('fuck goal create')
         
         await createGoal(goalText);
 

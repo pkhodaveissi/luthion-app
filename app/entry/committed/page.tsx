@@ -1,31 +1,52 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { RotateCcw, Lightbulb, Hourglass, CheckCircle, Crop, X } from "lucide-react";
 import GlobalHeader from "@/components/GlobalHeader";
 import MainNavButton from "@/components/MainNavButton";
 import BlurContainer from "@/components/BlurContainer";
 import MainNavDrawer from "@/components/MainNavDrawer";
+import { useGoal } from "@/lib/hooks/useGoal";
+import { useReflection } from "@/lib/hooks/useReflection";
+import { useScore } from "@/lib/hooks/useScore";
 
 export default function ReflectPage() {
-  const goalText = "Send an email to my organization, initiating my notice period.";
-
+  const router = useRouter();
+  const { goal, loading: goalLoading } = useGoal();
+  const { reflectionOptions, reflectOnGoal, loading: reflectionLoading } = useReflection();
+  const { dailyScore, getActivitiesNeededForMax, isMaxedOut } = useScore();
+  
   const [showOptions, setShowOptions] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
 
-  // Reflection options
-  const options = [
-    { text: "I tried, but life happened.", icon: <RotateCcw size={32} strokeWidth={1} /> },
-    { text: "Priorities shifted.", icon: <Lightbulb size={32} strokeWidth={1} /> },
-    { text: "Not today, and that’s okay.", icon: <Hourglass size={32} strokeWidth={1} /> },
-    { text: "I did it", icon: <CheckCircle size={32} strokeWidth={1} /> },
-  ];
+  // Map reflection types to icons
+  const iconMap = {
+    tried_life_happened: <RotateCcw size={32} strokeWidth={1} />,
+    priorities_shifted: <Lightbulb size={32} strokeWidth={1} />,
+    not_today: <Hourglass size={32} strokeWidth={1} />,
+    did_it: <CheckCircle size={32} strokeWidth={1} />
+  };
+
+  // Format reflection options with score
+  const formattedOptions = reflectionOptions.map(option => ({
+    id: option.id,
+    text: `${option.text} (+${option.score})`,
+    score: option.score,
+    icon: iconMap[option.reflectionType as keyof typeof iconMap],
+    reflectionType: option.reflectionType
+  }));
 
   // Handle selection
-  const handleSelect = (option: string) => {
-    console.log("Selected:", option);
-    setShowOptions(false);
-    // router.push("/last-7"); // Redirect or handle state update
+  const handleSelect = async (optionId: string) => {
+    if (!goal) return;
+    
+    const success = await reflectOnGoal(goal.id!, optionId);
+    
+    if (success) {
+      setShowOptions(false);
+      router.push("/last-7");
+    }
   };
 
   // Close options when clicking outside
@@ -45,15 +66,43 @@ export default function ReflectPage() {
     };
   }, [showOptions]);
 
+  // If no committed goal exists, redirect to entry
+  useEffect(() => {
+    if (!goalLoading && (!goal || goal.status !== 'committed')) {
+      router.push("/entry");
+    }
+  }, [goal, goalLoading, router]);
+
+  // If page is still loading, show loading state
+  if (goalLoading || reflectionLoading || !goal) {
+    return (
+      <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6">
+        <GlobalHeader />
+        <div className="flex items-center justify-center">
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6">
       <GlobalHeader />
+      
+      {/* Daily Score Summary */}
+      <div className="text-sm text-text-secondary mb-2">
+        <p>
+          Today&apos;s score: {dailyScore}/40
+          {isMaxedOut 
+            ? " (Max score reached for today!)" 
+            : ` (${getActivitiesNeededForMax()} more activities needed to reach max)`}
+        </p>
+      </div>
+
       {/* Goal Display (Non-editable) */}
-
       <BlurContainer>
-
         <div className="flex flex-col justify-start items-start text-left h-full pb-4">
-          <p className="text-xl italic text-text-primary">{goalText}</p>
+          <p className="text-xl italic text-text-primary">{goal.text}</p>
         </div>
       </BlurContainer>
 
@@ -62,11 +111,11 @@ export default function ReflectPage() {
         {/* Reflection Options (Expanding Above the Reflect Button) */}
         {showOptions && (
           <div className="w-full flex flex-col gap-y-2 mb-2 transition-all duration-200">
-            {options.map((option, index) => (
+            {formattedOptions.map((option) => (
               <button
-                key={index}
+                key={option.id}
                 className="btn flex items-center justify-start w-full"
-                onClick={() => handleSelect(option.text)}
+                onClick={() => handleSelect(option.id!)}
               >
                 {option.icon}
                 <span className="ml-2">{option.text}</span>
@@ -75,25 +124,21 @@ export default function ReflectPage() {
           </div>
         )}
         <div className="relative w-full">
-        {/* 
-          Wrap ONLY what you want blurred in <BlurContainer>. 
-          By leaving MainNavDrawer outside it, the drawer remains clear. 
-        */}
-        <BlurContainer>
-          <div className="flex w-full justify-between items-center gap-x-4">
-            {/* Reflect Button (Toggles Options) */}
-            <button
-              onClick={() => setShowOptions((prev) => !prev)}
-              className="btn btn-wide flex items-center justify-center"
-            >
-              {showOptions ? <X size={32} className="mr-2" /> : <Crop size={32} className="mr-2" />}
-              Reflect
-            </button>
-            <MainNavButton />
-          </div>
-        </BlurContainer>
-        {/* Nav Button */}
-        <MainNavDrawer />
+          <BlurContainer>
+            <div className="flex w-full justify-between items-center gap-x-4">
+              {/* Reflect Button (Toggles Options) */}
+              <button
+                onClick={() => setShowOptions((prev) => !prev)}
+                className="btn btn-wide flex items-center justify-center"
+              >
+                {showOptions ? <X size={32} className="mr-2" /> : <Crop size={32} className="mr-2" />}
+                Reflect
+              </button>
+              <MainNavButton />
+            </div>
+          </BlurContainer>
+          {/* Nav Button */}
+          <MainNavDrawer />
         </div>
       </div>
     </div>

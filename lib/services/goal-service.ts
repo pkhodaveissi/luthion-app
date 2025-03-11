@@ -50,12 +50,11 @@ export class GoalService {
         id,
         text,
         committedAt: now,
-        updatedAt: now,
       });
       if (!updatedGoal) {
         throw new Error('Failed to update goal - returned null');
       }
-      console.log('fuck me inside update', now, updatedGoal)
+      console.log('fuck inside update', now, updatedGoal)
 
       return updatedGoal;
     } catch (error) {
@@ -69,7 +68,6 @@ export class GoalService {
  * This allows the user to return to the entry page for full editing
  */
   static async resetGoalEditing(goalId: string): Promise<Goal> {
-    console.log("fuck fuck fuck")
     try {
       const { data: existingGoal } = await client.models.Goal.get({ id: goalId });
 
@@ -85,13 +83,12 @@ export class GoalService {
       const { data: updatedGoal } = await client.models.Goal.update({
         id: goalId,
         committedAt: null,  // Clear the committedAt timestamp
-        updatedAt: new Date().toISOString()
       });
 
       if (!updatedGoal) {
         throw new Error('Failed to reset goal editing - returned null');
       }
-      console.log('fuck me inside reset', updatedGoal)
+      console.log('fuck inside reset', updatedGoal)
 
       return updatedGoal;
     } catch (error) {
@@ -117,7 +114,6 @@ export class GoalService {
         id: goalId,
         status: 'committed',
         lockedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       });
       if (!committedGoal) {
         throw new Error('Failed to commit the goal - returned null');
@@ -148,8 +144,6 @@ export class GoalService {
         goalId,
         reflectionOptionId,
         score: 0,  // Will be updated based on the ReflectionOption
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       });
 
       if (!newReflection || errors) {
@@ -168,7 +162,6 @@ export class GoalService {
       await client.models.Reflection.update({
         id: newReflection.id,
         score: reflectionOption.score,
-        updatedAt: new Date().toISOString(),
       });
 
       // 5️⃣ Update the Goal status and link to the newly created Reflection
@@ -176,7 +169,6 @@ export class GoalService {
         id: goalId,
         status: 'reflected',
         reflectedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       });
 
       if (!reflectedGoal) {

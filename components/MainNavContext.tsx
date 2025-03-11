@@ -60,8 +60,10 @@ export function useMainNav() {
 
 // The provider component
 export function MainNavProvider({ children }: { children: React.ReactNode }) {
+
   const [navOpen, setNavOpen] = useState(false);
   const toggleNav = () => setNavOpen((prev) => !prev);
+    
 
   return (
     <MainNavContext.Provider value={{ navOpen, toggleNav }}>

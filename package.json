@@ -6,12 +6,14 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "ts-node scripts/seed.ts"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.5.4",
     "@aws-amplify/ui-react": "^6.9.3",
     "aws-amplify": "^6.13.3",
+    "aws-lambda": "^1.0.7",
     "lucide-react": "^0.477.0",
     "next": "15.2.0",
     "react": "19.0.0",
@@ -22,6 +24,7 @@
     "@aws-amplify/backend": "^1.14.1",
     "@aws-amplify/backend-cli": "^1.4.11",
     "@eslint/eslintrc": "^3",
+    "@types/aws-lambda": "^8.10.147",
     "@types/node": "^20",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
@@ -33,6 +36,7 @@
     "eslint-config-next": "15.2.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
     "typescript": "^5.7.2"
   },

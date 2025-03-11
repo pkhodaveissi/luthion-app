@@ -62,7 +62,7 @@ export default function RefinePage() {
       
       // Commit the goal to mark it as 'committed'
       if (goal?.id) {
-        console.log('fuck me, handle lock')
+        console.log('fuck, handle lock')
 
         await commitGoal(goal.id);
         router.push('/entry/committed');
@@ -95,7 +95,7 @@ export default function RefinePage() {
   useEffect(() => {
     if (timeRemaining <= 0 && goal?.id && goal.status === 'draft') {
       // Auto-lock the goal when timer expires
-      console.log('fuck me time not remaining', timeRemaining)
+      console.log('fuck time not remaining', timeRemaining)
       commitGoal(goal.id).then(() => {
         router.push('/entry/committed');
       });
