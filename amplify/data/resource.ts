@@ -51,7 +51,9 @@ const schema = a.schema({
     isActive: a.boolean().required(),
     reflectionType: a.enum(['tried_life_happened', 'priorities_shifted', 'not_today', 'did_it']),
     reflections: a.hasMany('Reflection', 'reflectionOptionId'),
-  }),
+  }).authorization((allow) => [
+    allow.authenticated().to(['read'])
+  ]),
   
   DailyScore: a.model({
     id: a.id(), // Auto-generated, optimized for DB operations
@@ -86,7 +88,9 @@ const schema = a.schema({
     maxScore: a.integer().required(),
     description: a.string().required(),
     userRanks: a.hasMany('UserRank', 'rankTierId'),
-  }),
+  }).authorization((allow) => [
+    allow.authenticated().to(['read'])
+  ]),
 
   UserRank: a.model({
     id: a.id(), // Auto-generated, optimized for DB operations
@@ -109,7 +113,7 @@ const schema = a.schema({
   })
   
 }).authorization((allow) => [
-  allow.owner().to(['create', 'read', 'update', 'delete']),
+  allow.owner(),
   allow.resource(seedDatabase)
 ]);
 

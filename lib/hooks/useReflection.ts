@@ -33,9 +33,6 @@ export function useReflection() {
       setLoading(true);
       setError(null);
       
-      // Initialize options if needed
-      await ReflectionService.initializeReflectionOptions();
-      
       // Get all active options
       const options = await ReflectionService.getReflectionOptions();
       setReflectionOptions(options);

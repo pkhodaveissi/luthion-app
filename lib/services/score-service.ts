@@ -40,7 +40,6 @@ export class ScoreService {
         const { data: updatedScore } = await client.models.DailyScore.update({
           id: existingScore.id,
           score: newScore,
-          reflectionCount: existingScore.reflectionCount + 1,
         });
         
         if (!updatedScore) {
@@ -141,12 +140,81 @@ export class ScoreService {
       throw new Error('Failed to get or create weekly score');
     }
   }
-  
+  // Get daily score for a specific date
+static async getDailyScoreByDate(userId: string, date: Date): Promise<DailyScore | null> {
+  try {
+    // Normalize the date to start of day
+    const targetDate = new Date(date);
+    targetDate.setHours(0, 0, 0, 0);
+    
+    const { data: scores } = await client.models.DailyScore.list({
+      filter: {
+        userId: { eq: userId },
+        date: { eq: targetDate.toISOString() }
+      },
+      limit: 1
+    });
+    
+    return scores[0] || null;
+  } catch (error) {
+    console.error('Error getting daily score by date:', error);
+    throw new Error('Failed to get daily score by date');
+  }
+}
+
+// Update a historical daily score
+static async updateHistoricalDailyScore(userId: string, date: Date, scoreDifference: number): Promise<DailyScore | null> {
+  try {
+    // Find the daily score for the given date
+    const dailyScore = await this.getDailyScoreByDate(userId, date);
+    
+    if (!dailyScore) {
+      console.warn(`No daily score found for date: ${date.toISOString()}`);
+      return null;
+    }
+    
+    if (!dailyScore.id) {
+      throw new Error('Daily score ID is missing');
+    }
+    
+    // Calculate new score (respecting the 40-point cap)
+    const newScore = Math.min(40, Math.max(0, dailyScore.score + scoreDifference));
+    const actualDifference = newScore - dailyScore.score;
+    
+    // If there's no actual change, don't update
+    if (actualDifference === 0) {
+      return dailyScore;
+    }
+    
+    // Update the daily score
+    const { data: updatedDailyScore } = await client.models.DailyScore.update({
+      id: dailyScore.id,
+      score: newScore,
+      updatedAt: new Date().toISOString()
+    });
+    
+    if (!updatedDailyScore) {
+      throw new Error('Failed to update historical daily score');
+    }
+    
+    // Update the associated weekly score if it exists
+    if (dailyScore.weeklyScoreId) {
+      await this.updateWeeklyScore(dailyScore.weeklyScoreId, actualDifference);
+    } else {
+      console.warn('Daily score has no associated weekly score ID');
+    }
+    
+    return updatedDailyScore;
+  } catch (error) {
+    console.error('Error updating historical daily score:', error);
+    throw new Error('Failed to update historical daily score');
+  }
+}
   // Update weekly score
   static async updateWeeklyScore(weeklyScoreId: string, points: number): Promise<WeeklyScore> {
     try {
       const { data: existingScore } = await client.models.WeeklyScore.get({ id: weeklyScoreId });
-      
+      console.log('fuck: weekly score', existingScore)
       if (!existingScore) {
         throw new Error('Weekly score not found');
       }
@@ -162,6 +230,7 @@ export class ScoreService {
         id: existingScore.id,
         score: newScore,
       });
+      console.log('fuck: weekly score: updted', updatedScore)
       
       if (!updatedScore) {
         throw new Error('Failed to update weekly score');

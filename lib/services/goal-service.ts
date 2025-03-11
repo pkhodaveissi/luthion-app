@@ -188,14 +188,10 @@ export class GoalService {
       const { data: goals } = await client.models.Goal.list({
         filter: {
           userId: { eq: userId },
-          or: [
-            { status: { eq: 'draft' } },
-            { status: { eq: 'committed' } },
-          ],
+          or: [{ status: { eq: 'draft' } }, { status: { eq: 'committed' } }]
         },
-        limit: 1,
       });
-
+      console.log('fuck: current goal', goals, goals[0], userId)
       return goals[0] || null;
     } catch (error) {
       console.error('Error getting current goal:', error);

@@ -54,8 +54,6 @@ export function useRank() {
       setLoading(true);
       setError(null);
       
-      // Initialize rank tiers if needed
-      await RankService.initializeRankTiers();
       
       // Update completed weeks
       await RankService.updateCompletedWeeks(user.id);
@@ -65,7 +63,7 @@ export function useRank() {
       
       // Get formatted rank page data
       const data = await RankService.getRankPageData(user.id);
-      data['weeklyProgress'] = fillWeeklyProgress(data.weeklyProgress)
+      data['weeklyProgress'] = fillWeeklyProgress(data.weeklyProgress).reverse()
       setRankData(data);
     } catch (err) {
       setError('Failed to load rank data');
