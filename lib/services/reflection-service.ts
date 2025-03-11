@@ -160,6 +160,7 @@ export class ReflectionService {
         },
         limit: limit * 2 // Get more than needed to ensure we have enough after filtering
       });
+      console.log('fuck: last7 reflections', goals)
 
       // Sort manually by reflectedAt in descending order
       const sortedGoals = goals
@@ -174,6 +175,7 @@ export class ReflectionService {
 
       // 2. For each goal, get the associated reflection and reflection option
       const result: RecentReflectionWithGoal[] = [];
+      console.log('fuck: last7 sortedGoals', sortedGoals)
 
       for (const goal of sortedGoals) {
         if (!goal.id) {
@@ -184,8 +186,8 @@ export class ReflectionService {
         // Get the reflection for this goal
         const { data: reflections } = await client.models.Reflection.list({
           filter: { goalId: { eq: goal.id } },
-          limit: 1
         });
+        console.log('fuck: const goal of sortedGoals', reflections, goal.id)
 
         if (reflections[0]) {
           const reflection = reflections[0];
@@ -209,6 +211,7 @@ export class ReflectionService {
           }
         }
       }
+      console.log('fuck: last7 result', result)
 
       return result;
     } catch (error) {

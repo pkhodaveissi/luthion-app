@@ -88,8 +88,10 @@ export default function ReflectPage() {
   return (
     <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6">
       <GlobalHeader />
-      
-      {/* Daily Score Summary */}
+      {/* Goal Display (Non-editable) */}
+
+      <BlurContainer>
+      <div className="flex flex-col">
       <div className="text-sm text-text-secondary mb-2">
         <p>
           Today&apos;s score: {dailyScore}/40
@@ -98,12 +100,10 @@ export default function ReflectPage() {
             : ` (${getActivitiesNeededForMax()} more activities needed to reach max)`}
         </p>
       </div>
-
-      {/* Goal Display (Non-editable) */}
-      <BlurContainer>
         <div className="flex flex-col justify-start items-start text-left h-full pb-4">
           <p className="text-xl italic text-text-primary">{goal.text}</p>
         </div>
+      </div>
       </BlurContainer>
 
       {/* Action Buttons */}
@@ -124,21 +124,25 @@ export default function ReflectPage() {
           </div>
         )}
         <div className="relative w-full">
-          <BlurContainer>
-            <div className="flex w-full justify-between items-center gap-x-4">
-              {/* Reflect Button (Toggles Options) */}
-              <button
-                onClick={() => setShowOptions((prev) => !prev)}
-                className="btn btn-wide flex items-center justify-center"
-              >
-                {showOptions ? <X size={32} className="mr-2" /> : <Crop size={32} className="mr-2" />}
-                Reflect
-              </button>
-              <MainNavButton />
-            </div>
-          </BlurContainer>
-          {/* Nav Button */}
-          <MainNavDrawer />
+        {/* 
+          Wrap ONLY what you want blurred in <BlurContainer>. 
+          By leaving MainNavDrawer outside it, the drawer remains clear. 
+        */}
+        <BlurContainer>
+          <div className="flex w-full justify-between items-center gap-x-4">
+            {/* Reflect Button (Toggles Options) */}
+            <button
+              onClick={() => setShowOptions((prev) => !prev)}
+              className="btn btn-wide flex items-center justify-center"
+            >
+              {showOptions ? <X size={32} className="mr-2" /> : <Crop size={32} className="mr-2" />}
+              Reflect
+            </button>
+            <MainNavButton />
+          </div>
+        </BlurContainer>
+        {/* Nav Button */}
+        <MainNavDrawer />
         </div>
       </div>
     </div>

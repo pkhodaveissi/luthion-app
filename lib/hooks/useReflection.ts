@@ -53,6 +53,7 @@ export function useReflection() {
       setError(null);
       
       const recentData = await ReflectionService.getRecentReflections(user.id, limit);
+      console.log('fuck: last7 reflections - hook', recentData)
       
       // Format the data
       const formattedReflections = recentData.map(item => ({
