@@ -1,13 +1,32 @@
-"use client";
-
+import { useRouter } from "next/navigation";
 import { useRef, useEffect } from "react";
 import { useMainNav } from "./MainNavContext";
-import { CircleUser, Info, Pen, Tally5, X } from "lucide-react";
+import { LucideIcon, Pen, Tally5, List, CircleUser, X } from "lucide-react";
+import { usePreviousRoute } from "@/lib/hooks/usePreviousRoute";
 
+
+
+
+// {routeList.map((option) => (
+//   <button
+//     key={option.id}
+//     className="btn flex items-center justify-start w-full"
+//     onClick={undefined}
+//   >
+//     {option.icon}
+//   </button>
+// ))}
+const routeMap: Record<string, LucideIcon> = {
+  '/last-7': List,
+  '/rank': Tally5,
+  '/entry': Pen,
+  '/user': CircleUser,
+};
 export default function MainNavDrawer() {
+  const router = useRouter();
   const { navOpen, toggleNav } = useMainNav();
   const menuRef = useRef<HTMLDivElement>(null);
-
+  const prevRoute = usePreviousRoute();
   // OPTIONAL: close menu if user clicks outside it
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -20,6 +39,15 @@ export default function MainNavDrawer() {
   }, [navOpen, toggleNav]);
 
   if (!navOpen) return null;
+  console.log('fuck: prevRoute', prevRoute)
+  const menuItems = [
+    { icon: CircleUser, muted: true, stroke: 1 },
+    { icon: Tally5, muted: true, stroke: 1, onClick: () => router.push("/rank") },
+    { icon: List, muted: true, stroke: 1, onClick: () =>  router.push("/last-7") },
+    { icon: Pen, muted: true, stroke: 1, onClick: () => router.push("/entry") },
+    { icon: routeMap[prevRoute], muted: true, stroke: 1, onClick: () => router.push(prevRoute) },
+    { icon: X, muted: false, stroke: 2, onClick: toggleNav }
+  ];
 
   return (
     <div
@@ -32,24 +60,26 @@ export default function MainNavDrawer() {
         grid grid-cols-2
       "
     >
-      <button className="btn flex flex-col items-center border-r border-b border-background  rounded-none text-text-muted">
-        <CircleUser size={32} strokeWidth={1} />
-      </button>
-      <button className="btn flex flex-col items-center border-b border-background  rounded-none text-text-muted" >
-        <Info size={32} strokeWidth={1} />
-      </button>
-      <button className="btn flex flex-col items-center border-r border-b border-background  rounded-none text-text-muted" >
-        <Tally5 size={32} strokeWidth={1} />
-      </button>
-      <button className="btn flex flex-col items-center border-b border-background  rounded-none">
-        <Pen size={32} strokeWidth={1} />
-      </button>
-      <button className="btn flex flex-col items-center border-r border-background  rounded-none text-text-muted" >
-        <Tally5 size={32} strokeWidth={1} />
-      </button>
-      <button onClick={toggleNav} className="btn flex flex-col items-center border-background  rounded-none">
-        <X size={32} />
-      </button>
+      {menuItems.map((item, index) => {
+        // Determine border classes based on index
+        const borderClasses = [
+          // Add right border to left column (even indices are 0, 2, 4)
+          index % 2 === 0 ? "border-r" : "",
+          // Add bottom border to all except last row
+          index < menuItems.length - 2 ? "border-b" : "",
+          "border-background rounded-none"
+        ].join(" ");
+
+        return (
+          <button
+            key={index}
+            className={`btn flex flex-col items-center ${borderClasses} ${item.muted ? "text-text-muted" : ""}`}
+            onClick={item.onClick ? item.onClick : undefined}
+          >
+            <item.icon size={32} strokeWidth={item.stroke} />
+          </button>
+        );
+      })}
     </div>
   );
 }
