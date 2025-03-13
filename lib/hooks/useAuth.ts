@@ -1,4 +1,3 @@
-'use client';
 
 import { useState, useEffect } from 'react';
 import { getCurrentUser } from 'aws-amplify/auth';
@@ -13,12 +12,17 @@ interface AuthState {
   refresh: () => Promise<void>;
 }
 
-export function useAuth(): AuthState {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useAuth(initialUser: User | null = null): AuthState {
+  const [user, setUser] = useState<User | null>(initialUser);
+  console.log('fuck auth', user, initialUser)
+  // If we have initial user data, start with loading=false
+  const [loading, setLoading] = useState(!initialUser);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchUser = async () => {
+    // If we're already loading, don't trigger another load
+    if (loading) return;
+    
     try {
       setLoading(true);
       setError(null);
@@ -44,9 +48,12 @@ export function useAuth(): AuthState {
     }
   };
 
+  // Only fetch user on mount if we don't have initialUser
   useEffect(() => {
-    fetchUser();
-  }, []);
+    if (!initialUser) {
+      fetchUser();
+    }
+  }, [initialUser]);
 
   return {
     user,

@@ -54,7 +54,6 @@ export class GoalService {
       if (!updatedGoal) {
         throw new Error('Failed to update goal - returned null');
       }
-      console.log('fuck inside update', now, updatedGoal)
 
       return updatedGoal;
     } catch (error) {
@@ -88,7 +87,6 @@ export class GoalService {
       if (!updatedGoal) {
         throw new Error('Failed to reset goal editing - returned null');
       }
-      console.log('fuck inside reset', updatedGoal)
 
       return updatedGoal;
     } catch (error) {
@@ -191,7 +189,6 @@ export class GoalService {
           or: [{ status: { eq: 'draft' } }, { status: { eq: 'committed' } }]
         },
       });
-      console.log('fuck: current goal', goals, goals[0], userId)
       return goals[0] || null;
     } catch (error) {
       console.error('Error getting current goal:', error);

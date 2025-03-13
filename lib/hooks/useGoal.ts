@@ -1,57 +1,68 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { GoalService } from '@/lib/services/goal-service';
 import { type Schema } from '@/amplify/data/resource';
-import { useAuth } from '@/lib/hooks/useAuth';
 
-type Goal = Schema['Goal']['type'];
+export type Goal = Schema['Goal']['type'];
 
-export function useGoal() {
-  const { user } = useAuth(); // Get current user
-  const [goal, setGoal] = useState<Goal | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useGoal(initialGoal: Goal | null = null, userId: string) {
+
+   // Helper function to calculate time remaining
+   const calculateTimeRemaining = useCallback((goalWithTime: Goal | null): number => {
+    if (!goalWithTime?.committedAt || goalWithTime.status !== 'draft' || goalWithTime.lockedAt) {
+      return 0;
+    }
+    
+    const committedTime = new Date(goalWithTime.committedAt).getTime();
+    const currentTime = new Date().getTime();
+    const elapsedMs = currentTime - committedTime;
+    return Math.max(0, 300 - Math.floor(elapsedMs / 1000)); // 300 seconds = 5 minutes
+  }, []);
+
+  const [goal, setGoal] = useState<Goal | null>(initialGoal);
+  const [loading, setLoading] = useState(!initialGoal);
   const [error, setError] = useState<string | null>(null);
-  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+ // Use the helper function to calculate initial time remaining
+  const initialTimeRemaining = useMemo(() => {
+    return calculateTimeRemaining(initialGoal);
+  }, [initialGoal, calculateTimeRemaining]);
+
+  const [timeRemaining, setTimeRemaining] = useState<number>(initialTimeRemaining);
 
   // Load the current goal
   const loadGoal = useCallback(async () => {
-    if (!user?.id) return;
-    
+    console.log('fuck laodUser', userId)
+    if (!userId) return;
+
     try {
       setLoading(true);
       setError(null);
-      const currentGoal = await GoalService.getCurrentGoal(user.id);
+      const currentGoal = await GoalService.getCurrentGoal(userId);
       setGoal(currentGoal);
-      
+
       // If there's a goal with committedAt but not locked yet, start the timer
-      if (currentGoal?.committedAt && currentGoal.status === 'draft' && !currentGoal.lockedAt) {
-        const committedTime = new Date(currentGoal.committedAt).getTime();
-        const currentTime = new Date().getTime();
-        const elapsedMs = currentTime - committedTime;
-        const remainingSec = Math.max(0, 300 - Math.floor(elapsedMs / 1000)); // 300 seconds = 5 minutes
-        
-        setTimeRemaining(remainingSec);
-      }
+      setTimeRemaining(calculateTimeRemaining(currentGoal));
     } catch (err) {
       setError('Failed to load goal');
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [userId]);
 
   // Create a new goal
   const createGoal = useCallback(async (text: string) => {
-    if (!user?.id) {
+    if (!userId) {
       setError('User not authenticated');
       return null;
     }
-    
+    console.log('fuck create', userId)
+
     try {
       setLoading(true);
       setError(null);
-      const newGoal = await GoalService.createGoal({ 
-        text, 
-        userId: user.id, 
+      const newGoal = await GoalService.createGoal({
+        text,
+        userId,
       });
       setGoal(newGoal);
       return newGoal;
@@ -62,18 +73,19 @@ export function useGoal() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [userId]);
 
   // Update goal text
-  const updateGoalText = useCallback(async (text: string) => {
-    if (!goal?.id) return null;
-    
+  const updateGoalText = useCallback(async (text: string, goalId?: string | null) => {
+    const id = goalId || goal?.id;
+    if (!id) return null;
+
     try {
       setLoading(true);
       setError(null);
-      const updatedGoal = await GoalService.updateGoalText({ 
-        id: goal.id, 
-        text 
+      const updatedGoal = await GoalService.updateGoalText({
+        id,
+        text
       });
       setGoal(updatedGoal);
       return updatedGoal;
@@ -89,13 +101,11 @@ export function useGoal() {
   const resetEditing = useCallback(async (goalId?: string) => {
     const id = goalId || goal?.id;
     if (!id) return null;
-    
+
     try {
       setLoading(true);
       setError(null);
       const updatedGoal = await GoalService.resetGoalEditing(id);
-      console.log('fuck inside reset hook', updatedGoal)
-
       setGoal(updatedGoal);
       return updatedGoal;
     } catch (err) {
@@ -111,7 +121,7 @@ export function useGoal() {
   const commitGoal = useCallback(async (goalId?: string) => {
     const id = goalId || goal?.id;
     if (!id) return null;
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -151,7 +161,7 @@ export function useGoal() {
   const deleteGoal = useCallback(async (goalId?: string) => {
     const id = goalId || goal?.id;
     if (!id) return false;
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -170,31 +180,31 @@ export function useGoal() {
   // Update the timer every second when goal is in editing mode
   useEffect(() => {
     if (!goal?.committedAt || goal.status !== 'draft' || goal.lockedAt) return;
-    
+
     const timerInterval = setInterval(() => {
       const committedTime = new Date(goal.committedAt!).getTime();
       const currentTime = new Date().getTime();
       const elapsedMs = currentTime - committedTime;
       const remainingSec = Math.max(0, 300 - Math.floor(elapsedMs / 1000)); // 300 seconds = 5 minutes
-      
+
       setTimeRemaining(remainingSec);
       
       // Auto-lock goal if timer expires
       if (remainingSec <= 0) {
-        commitGoal();
+        commitGoal(goal.id!);
         clearInterval(timerInterval);
       }
     }, 1000);
-    
+
     return () => clearInterval(timerInterval);
   }, [goal, commitGoal]);
 
-  // Load the goal on mount and when user changes
+  // Load the goal on mount only if initialGoal is not provided
   useEffect(() => {
-    if (user?.id) {
+    if (userId && !initialGoal) {
       loadGoal();
     }
-  }, [user?.id, loadGoal]);
+  }, [userId, loadGoal, initialGoal]);
 
   return {
     goal,
