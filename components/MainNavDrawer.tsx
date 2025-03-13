@@ -42,10 +42,10 @@ export default function MainNavDrawer() {
   console.log('fuck: prevRoute', prevRoute)
   const menuItems = [
     { icon: CircleUser, muted: true, stroke: 1 },
-    { icon: Tally5, muted: true, stroke: 1, onClick: () => router.push("/rank") },
-    { icon: List, muted: true, stroke: 1, onClick: () =>  router.push("/last-7") },
-    { icon: Pen, muted: true, stroke: 1, onClick: () => router.push("/entry") },
-    { icon: routeMap[prevRoute], muted: true, stroke: 1, onClick: () => router.push(prevRoute) },
+    { icon: Tally5, muted: true, stroke: 1, onClick: () => {router.push("/rank"); toggleNav();} },
+    { icon: List, muted: true, stroke: 1, onClick: () =>   {router.push("/last-7"); toggleNav();} },
+    { icon: Pen, muted: true, stroke: 1, onClick: () => { router.push("/entry"); toggleNav();} },
+    { icon: routeMap[prevRoute], muted: true, stroke: 1, onClick: () =>  {router.push(prevRoute); toggleNav();} },
     { icon: X, muted: false, stroke: 2, onClick: toggleNav }
   ];
 

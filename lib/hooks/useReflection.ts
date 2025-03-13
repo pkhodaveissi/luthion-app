@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ReflectionService } from '@/lib/services/reflection-service';
+import { ReflectedGoal, ReflectionService } from '@/lib/services/reflection-service';
 import { type Schema } from '@/amplify/data/resource';
 import { useScore } from './useScore';
 import { useRank } from './useRank';
 
-type ReflectionOption = Schema['ReflectionOption']['type'];
+export type ReflectionOption = Schema['ReflectionOption']['type'];
 type RecentReflection = {
   goalId: string;
   goalText: string;
@@ -16,13 +16,31 @@ type RecentReflection = {
   reflectedAt: string;
 };
 
-export function useReflection(userId: string) {
+  // Format the data
+  const formatReflections = (reflections?: ReflectedGoal[]) => {
+    if (!reflections) {
+      return []
+    } 
+    return reflections.map(item => ({
+      goalId: item.id || '',
+      goalText: item.text,
+      reflectionId: item.reflection.id || '',
+      reflectionOptionId: item.reflection.reflectionOptionId || '',
+      reflectionText: item.reflection.reflectionOption.text,
+      reflectionType: item.reflection.reflectionOption.reflectionType || '',
+      reflectionScore: item.reflection.score,
+      reflectedAt: item.reflectedAt as string
+    }))
+  };
+
+export function useReflection(userId: string, initialReflections?: ReflectedGoal[], initialReflectionOptions?: ReflectionOption[] | null) {
   const { refreshScores } = useScore();
   const { refreshRankData } = useRank();
   
-  const [reflectionOptions, setReflectionOptions] = useState<ReflectionOption[]>([]);
-  const [recentReflections, setRecentReflections] = useState<RecentReflection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [reflectionOptions, setReflectionOptions] = useState<ReflectionOption[]>(initialReflectionOptions || []);
+  const formattedReflections = formatReflections(initialReflections)
+  const [recentReflections, setRecentReflections] = useState<RecentReflection[]>(formattedReflections);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load reflection options
@@ -53,19 +71,9 @@ export function useReflection(userId: string) {
       const recentData = await ReflectionService.getRecentReflections(userId, limit);
       console.log('fuck: last7 reflections - hook', recentData)
       
-      // Format the data
-      const formattedReflections = recentData.map(item => ({
-        goalId: item.goal.id || '',
-        goalText: item.goal.text,
-        reflectionId: item.reflection.id || '',
-        reflectionOptionId: item.reflection.reflectionOptionId || '',
-        reflectionText: item.reflectionOption.text,
-        reflectionType: item.reflectionOption.reflectionType || '',
-        reflectionScore: item.reflection.score,
-        reflectedAt: item.goal.reflectedAt || new Date().toISOString()
-      }));
-      
-      setRecentReflections(formattedReflections);
+    
+      const formattedReflections = formatReflections(recentData)
+      setRecentReflections(formattedReflections as RecentReflection[]);
     } catch (err) {
       setError('Failed to load recent reflections');
       console.error(err);
@@ -151,12 +159,13 @@ export function useReflection(userId: string) {
 
   // Load options on mount and when user changes
   useEffect(() => {
-    loadReflectionOptions();
-    
-    if (userId) {
+    if(!initialReflectionOptions) {
+      loadReflectionOptions();
+    }
+    if (userId && !initialReflections) {
       loadRecentReflections();
     }
-  }, [userId, loadReflectionOptions, loadRecentReflections]);
+  }, [userId, loadReflectionOptions, loadRecentReflections, initialReflections, initialReflectionOptions]);
 
   return {
     reflectionOptions,

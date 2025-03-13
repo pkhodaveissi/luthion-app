@@ -32,7 +32,9 @@ const schema = a.schema({
     reflectedAt: a.datetime(),
     updatedAt: a.datetime(),
     reflection: a.hasOne('Reflection', 'goalId'),
-  }),
+  }).secondaryIndexes((index) => [
+    index("userId").sortKeys(["reflectedAt"]).queryField("listGoalsByUserOrderedbyReflection"),
+  ]),
 
   Reflection: a.model({
     id: a.id(), // Auto-generated, optimized for DB operations

@@ -5,13 +5,30 @@ import { RankService } from './rank-service';
 
 type ReflectionOption = Schema['ReflectionOption']['type'];
 type Reflection = Schema['Reflection']['type'];
-type Goal = Schema['Goal']['type'];
+type ReflectionOptionForReflected = {
+  id: string;
+  text: string;
+  score: number;
+  isActive: boolean;
+  reflectionType: 'tried_life_happened' | 'priorities_shifted' | 'not_today' | 'did_it';
+}
 
+type ReflectionForReflected = {
+  id: string;
+  goalId: string;
+  reflectionOptionId: string;
+  score: number;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  reflectionOption: ReflectionOptionForReflected;
+}
 
-interface RecentReflectionWithGoal {
-  goal: Goal;
-  reflection: Reflection;
-  reflectionOption: ReflectionOption;
+export type ReflectedGoal = {
+  id: string;
+  userId: string;
+  text: string;
+  reflectedAt: string | Date;
+  reflection: ReflectionForReflected;
 }
 
 export class ReflectionService {
@@ -150,70 +167,18 @@ export class ReflectionService {
   }
 
   // Get recent reflections with associated goals
-  static async getRecentReflections(userId: string, limit: number = 7): Promise<RecentReflectionWithGoal[]> {
+  static async getRecentReflections(userId: string, limit: number = 7): Promise<ReflectedGoal[]> {
     try {
       // 1. Get goals with reflections for this user
-      const { data: goals } = await client.models.Goal.list({
-        filter: {
-          userId: { eq: userId },
-          status: { eq: 'reflected' }
-        },
-        limit: limit * 2 // Get more than needed to ensure we have enough after filtering
+      const { data: goals } = await client.models.Goal.listGoalsByUserOrderedbyReflection({
+        userId: userId,
+      }, {
+        sortDirection: 'DESC',
+        selectionSet: ['id', 'reflectedAt', 'userId', 'text', 'reflection.*', 'reflection.reflectionOption.*'],
+        limit: limit
       });
-      console.log('fuck: last7 reflections', goals)
 
-      // Sort manually by reflectedAt in descending order
-      const sortedGoals = goals
-        .filter(goal => goal.reflectedAt) // Ensure reflectedAt exists
-        .sort((a, b) => {
-          // Safely handle cases where reflectedAt might be undefined
-          const dateA = a.reflectedAt ? new Date(a.reflectedAt).getTime() : 0;
-          const dateB = b.reflectedAt ? new Date(b.reflectedAt).getTime() : 0;
-          return dateB - dateA; // Descending order (newest first)
-        })
-        .slice(0, limit); // Take only the requested number
-
-      // 2. For each goal, get the associated reflection and reflection option
-      const result: RecentReflectionWithGoal[] = [];
-      console.log('fuck: last7 sortedGoals', sortedGoals)
-
-      for (const goal of sortedGoals) {
-        if (!goal.id) {
-          console.warn('Goal missing ID, skipping');
-          continue;
-        }
-
-        // Get the reflection for this goal
-        const { data: reflections } = await client.models.Reflection.list({
-          filter: { goalId: { eq: goal.id } },
-        });
-        console.log('fuck: const goal of sortedGoals', reflections, goal.id)
-
-        if (reflections[0]) {
-          const reflection = reflections[0];
-
-          if (!reflection.reflectionOptionId) {
-            console.warn('Reflection missing option ID, skipping');
-            continue;
-          }
-
-          // Get the reflection option
-          const { data: option } = await client.models.ReflectionOption.get({
-            id: reflection.reflectionOptionId
-          });
-
-          if (option) {
-            result.push({
-              goal,
-              reflection,
-              reflectionOption: option
-            });
-          }
-        }
-      }
-      console.log('fuck: last7 result', result)
-
-      return result;
+      return goals as unknown as ReflectedGoal[];
     } catch (error) {
       console.error('Error getting recent reflections:', error);
       throw new Error('Failed to get recent reflections');
