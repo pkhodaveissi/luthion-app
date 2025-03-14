@@ -90,6 +90,8 @@ const schema = a.schema({
     maxScore: a.integer().required(),
     description: a.string().required(),
     userRanks: a.hasMany('UserRank', 'rankTierId'),
+    nextRankName:  a.string(),
+    previousRankName:  a.string(),
   }).authorization((allow) => [
     allow.authenticated().to(['read'])
   ]),

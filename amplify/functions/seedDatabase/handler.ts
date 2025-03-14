@@ -39,43 +39,57 @@ const RANK_TIERS = [
     name: "Peak",
     minScore: 3100,
     maxScore: 3360,
-    description: "At the highest level of engagement, maintaining peak performance."
+    description: "You're operating at your best—fully engaged, fully aligned. Keep nurturing this momentum to stay in flow.",
+    previousRankName: "Momentum",
+    nextRankName: null
   },
   {
     name: "Momentum",
     minScore: 2700,
     maxScore: 3099,
-    description: "Highly engaged, but could slip if not consistent."
+    description: "You're thriving with consistent effort. A small push could elevate you to your highest level.",
+    previousRankName: "Flowing",
+    nextRankName: "Peak"
   },
   {
     name: "Flowing",
     minScore: 2200,
     maxScore: 2699,
-    description: "Strong, steady engagement with minor dips."
+    description: "You're in rhythm, steadily progressing. Some adjustments can help you reach an even stronger state.",
+    previousRankName: "Steady",
+    nextRankName: "Momentum"
   },
   {
     name: "Steady",
     minScore: 1600,
     maxScore: 2199,
-    description: "Moderately engaged, but not fully consistent."
+    description: "You're maintaining progress, but there’s room to strengthen your commitment. Small shifts will build momentum.",
+    previousRankName: "Rebuilding",
+    nextRankName: "Flowing"
   },
   {
     name: "Rebuilding",
     minScore: 1000,
     maxScore: 1599,
-    description: "Gaining momentum after a drop or break."
+    description: "You're regaining ground. Keep stacking your efforts—every step forward strengthens your foundation.",
+    previousRankName: "Renewing",
+    nextRankName: "Steady"
   },
   {
     name: "Renewing",
     minScore: 400,
     maxScore: 999,
-    description: "Low engagement, but showing signs of progress."
+    description: "You're re-engaging, shaking off the rust. Keep showing up, and growth will follow.",
+    previousRankName: "Starting",
+    nextRankName: "Rebuilding"
   },
   {
     name: "Starting",
     minScore: 0,
     maxScore: 399,
-    description: "Almost inactive, starting over from a minimal base."
+    description: "You're at the starting point. The first step matters—commit to small, consistent actions to build momentum.",
+    previousRankName: null,
+    nextRankName: "Renewing"
   }
 ];
 
