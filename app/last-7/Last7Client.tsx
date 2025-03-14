@@ -9,7 +9,6 @@ import {
   Hourglass,
   Pen,
 } from "lucide-react";
-import GlobalHeader from "@/components/GlobalHeader";
 import MainNavButton from "@/components/MainNavButton";
 import BlurContainer from "@/components/BlurContainer";
 import MainNavDrawer from "@/components/MainNavDrawer";
@@ -29,7 +28,7 @@ const iconMap: Record<string, JSX.Element> = {
   not_today: <Hourglass size={32} strokeWidth={1} />, // Delayed
 };
 
-export default function Last7Page({userId, initialReflections, initialReflectionOptions}: Last7PageProps) {
+export default function Last7Page({ userId, initialReflections, initialReflectionOptions }: Last7PageProps) {
   const router = useRouter();
   const { recentReflections, reflectionOptions, updateReflection, loading } = useReflection(userId, initialReflections, initialReflectionOptions);
   const { dailyScore, getActivitiesNeededForMax, isMaxedOut } = useScore();
@@ -63,9 +62,9 @@ export default function Last7Page({userId, initialReflections, initialReflection
 
   // Handle selection of an entry
   const handleEntryClick = (index: number, event: React.MouseEvent) => {
-    if(selectedEntry) {
+    if (selectedEntry) {
       setSelectedEntry(null);
-    } 
+    }
     else {
       const entryElement = event.currentTarget;
       const rect = entryElement.getBoundingClientRect();
@@ -78,9 +77,9 @@ export default function Last7Page({userId, initialReflections, initialReflection
   // Handle selection of a reflection option
   const handleReflectionSelect = async (e: React.MouseEvent, reflectionId: string, optionId: string) => {
     e.stopPropagation();
-    
+
     const success = await updateReflection(reflectionId, optionId);
-    
+
     if (success) {
       setSelectedEntry(null);
     }
@@ -90,7 +89,6 @@ export default function Last7Page({userId, initialReflections, initialReflection
   if (loading) {
     return (
       <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6">
-        <GlobalHeader />
         <div className="flex items-center justify-center">
           <p>Loading...</p>
         </div>
@@ -99,15 +97,13 @@ export default function Last7Page({userId, initialReflections, initialReflection
   }
 
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6 relative">
-      <GlobalHeader />
-      
+    <>
       {/* Daily Score Summary */}
       <div className="text-sm text-text-secondary mb-2">
         <p>
           Today&apos;s score: {dailyScore}/40
-          {isMaxedOut 
-            ? " (Max score reached for today!)" 
+          {isMaxedOut
+            ? " (Max score reached for today!)"
             : ` (${getActivitiesNeededForMax()} more activities needed to reach max)`}
         </p>
       </div>
@@ -123,7 +119,7 @@ export default function Last7Page({userId, initialReflections, initialReflection
               <p>Start by adding goals and reflecting on them!</p>
             </div>
           )}
-          
+
           {recentReflections.map((entry, index) => {
             const isSelected = Math.abs(selectedEntry!) === index + 1;
             const openAbove = selectedEntry! < 0;
@@ -185,6 +181,6 @@ export default function Last7Page({userId, initialReflections, initialReflection
         </BlurContainer>
         <MainNavDrawer />
       </div>
-    </div>
+    </>
   );
 }

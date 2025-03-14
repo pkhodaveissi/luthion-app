@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, Pen, Loader } from "lucide-react";
 import { Goal, useGoal } from "@/lib/hooks/useGoal";
-import GlobalHeader from "@/components/GlobalHeader";
 import MainNavButton from "@/components/MainNavButton";
 import BlurContainer from "@/components/BlurContainer";
 import MainNavDrawer from "@/components/MainNavDrawer";
@@ -113,8 +112,7 @@ export default function RefinePage({ initialGoal, userId }: RefinePageProps) {
   // Error state
   if (error) {
     return (
-      <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6 relative">
-        <GlobalHeader />
+      <>
         <BlurContainer>
           <div className="flex flex-col justify-center items-center h-full">
             <p className="text-red-500 mb-4">{error}</p>
@@ -123,13 +121,12 @@ export default function RefinePage({ initialGoal, userId }: RefinePageProps) {
             </button>
           </div>
         </BlurContainer>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6 relative">
-      <GlobalHeader />
+    <>
 
       <BlurContainer>
         {/* Goal Display (Non-editable) */}
@@ -175,6 +172,6 @@ export default function RefinePage({ initialGoal, userId }: RefinePageProps) {
 
         <MainNavDrawer />
       </div>
-    </div>
+    </>
   );
 }

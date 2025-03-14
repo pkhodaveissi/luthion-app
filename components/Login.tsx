@@ -5,6 +5,7 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import { AuthUser, signOut } from "aws-amplify/auth";
 import { redirect, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import '@aws-amplify/ui-react/styles.css';
 
 function Login({ user }: { user?: AuthUser }) {
   const searchParams = useSearchParams();

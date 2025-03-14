@@ -29,7 +29,7 @@ export async function getInitialReflectionData(userId: string, limit: number = 7
     const { data: goalsWithReflections } = await amplifyCookiesClient.models.Goal.listGoalsByUserOrderedbyReflection({
       userId: userId,
     }, {
-      sortDirection: 'DESC',
+      sortDirection: 'ASC',
       selectionSet: ['id', 'reflectedAt', 'userId', 'text', 'reflection.*', 'reflection.reflectionOption.*'],
       limit,
     });

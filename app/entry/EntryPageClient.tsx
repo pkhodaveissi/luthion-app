@@ -3,7 +3,6 @@
 import { useState, useEffect, FormEvent, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { Circle, Loader } from "lucide-react";
-import GlobalHeader from "@/components/GlobalHeader";
 import BlurContainer from "@/components/BlurContainer";
 import MainNavButton from "@/components/MainNavButton";
 import MainNavDrawer from "@/components/MainNavDrawer";
@@ -87,8 +86,7 @@ export default function EntryPage({ initialGoal, userId }: {initialGoal: Goal | 
   }
   
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6 relative">
-      <GlobalHeader />
+    <>
 
       <BlurContainer>
         <EntryPrompt goalText={goalText} setGoalText={setGoalText} />
@@ -104,7 +102,7 @@ export default function EntryPage({ initialGoal, userId }: {initialGoal: Goal | 
         </BlurContainer>
         <MainNavDrawer />
       </div>
-    </div>
+    </>
   );
 }
 
