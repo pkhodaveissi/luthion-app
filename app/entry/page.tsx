@@ -10,7 +10,7 @@ export default async function EntryPage() {
   const userId = user?.id;
    // Redirect to login if no user
    if (!userId) {
-    redirect('/login'); 
+    redirect('/login?signed_out=true'); 
     return null;
   }
   if (user?.id) {

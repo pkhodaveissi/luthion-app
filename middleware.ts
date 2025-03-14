@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import { fetchAuthSession } from "aws-amplify/auth/server";
 
 import { runWithAmplifyServerContext } from "@/lib/utils/amplify-server-utils";
@@ -21,9 +20,9 @@ export async function middleware(request: NextRequest) {
   });
 
   if (authenticated) {
+    console.log('fuck not authenticated')
     return response;
   }
-
   return NextResponse.redirect(new URL("/login", request.url));
 }
 
