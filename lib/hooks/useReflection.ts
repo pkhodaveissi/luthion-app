@@ -35,7 +35,7 @@ type RecentReflection = {
 
 export function useReflection(userId: string, initialReflections?: ReflectedGoal[], initialReflectionOptions?: ReflectionOption[] | null) {
   const { refreshScores } = useScore();
-  const { refreshRankData } = useRank();
+  const { refreshRankData } = useRank(userId);
   
   const [reflectionOptions, setReflectionOptions] = useState<ReflectionOption[]>(initialReflectionOptions || []);
   const formattedReflections = formatReflections(initialReflections)

@@ -65,6 +65,7 @@ export function useRank(userId: string, initialRankData?: RankPageData) {
     if (!userId) return;
     
     try {
+      setLoading(true);
       setError(null);
       // Update completed weeks
       await RankService.updateCompletedWeeks(userId);
@@ -79,6 +80,8 @@ export function useRank(userId: string, initialRankData?: RankPageData) {
     } catch (err) {
       setError('Failed to load rank data');
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   }, [userId]);
   // Calculate progress percentage within current tier
