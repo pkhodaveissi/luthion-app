@@ -18,7 +18,7 @@ interface CommittedPageClientProps {
 
 export default function CommittedPageClient({ initialGoal, userId }: CommittedPageClientProps) {
   const router = useRouter();
-  const { goal, error, refreshGoal } = useGoal(initialGoal, userId);
+  const { goal, error, refreshGoal } = useGoal(userId, initialGoal);
   const { reflectionOptions, reflectOnGoal } = useReflection(userId);
   const { dailyScore, getActivitiesNeededForMax, isMaxedOut } = useScore();
   

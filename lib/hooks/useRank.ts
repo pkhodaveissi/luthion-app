@@ -1,24 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { RankService } from '@/lib/services/rank-service';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { RankPageData } from '../services/goal-service-ssr';
 
 type WeeklyProgressItem = {
   week: string;
   score: number;
   isCurrentWeek: boolean;
 };
-interface RankData {
-  rank: string;
-  points: number;
-  previousRank: number;
-  nextRank: number;
-  nextRankName: string | null;
-  previousRankName: string | null;
-  weeklyProgress: Array<WeeklyProgressItem>;
-  currentWeekScore: number;
-  todayScore: number;
-  todayReflectionCount: number;
-}
+
 
 function fillWeeklyProgress(data: Array<WeeklyProgressItem>): Array<WeeklyProgressItem> {
   // Define the 13-week structure
@@ -40,15 +29,14 @@ function fillWeeklyProgress(data: Array<WeeklyProgressItem>): Array<WeeklyProgre
   return weeklyProgress;
 }
 
-export function useRank() {
-  const { user } = useAuth();
-  const [rankData, setRankData] = useState<RankData | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useRank(userId: string, initialRankData?: RankPageData) {
+  const [rankData, setRankData] = useState<RankPageData | null>(initialRankData || null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load rank data
   const loadRankData = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
     
     try {
       setLoading(true);
@@ -56,13 +44,13 @@ export function useRank() {
       
       
       // Update completed weeks
-      await RankService.updateCompletedWeeks(user.id);
+      await RankService.updateCompletedWeeks(userId);
       
       // Calculate and update rank
-      await RankService.calculateAndUpdateRank(user.id);
+      await RankService.calculateAndUpdateRank(userId);
       
       // Get formatted rank page data
-      const data = await RankService.getRankPageData(user.id);
+      const data = await RankService.getRankPageData(userId);
       data['weeklyProgress'] = fillWeeklyProgress(data.weeklyProgress).reverse()
       setRankData(data);
     } catch (err) {
@@ -71,8 +59,28 @@ export function useRank() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [userId]);
 
+  const loadClientRankData = useCallback(async () => {
+    if (!userId) return;
+    
+    try {
+      setError(null);
+      // Update completed weeks
+      await RankService.updateCompletedWeeks(userId);
+      
+      // Calculate and update rank
+      await RankService.calculateAndUpdateRank(userId);
+      
+      // Get formatted rank page data
+      const data = await RankService.getRankPageData(userId);
+      data['weeklyProgress'] = fillWeeklyProgress(data.weeklyProgress).reverse()
+      setRankData(data);
+    } catch (err) {
+      setError('Failed to load rank data');
+      console.error(err);
+    }
+  }, [userId]);
   // Calculate progress percentage within current tier
   const getProgressInTierPercentage = useCallback(() => {
     if (!rankData) return 0;
@@ -87,10 +95,13 @@ export function useRank() {
 
   // Load rank data on mount and when user changes
   useEffect(() => {
-    if (user?.id) {
+    if (userId && !initialRankData) {
       loadRankData();
     }
-  }, [user?.id, loadRankData]);
+    if(!rankData?.weeklyProgress?.length) {
+      loadClientRankData()
+    }
+  }, [userId, loadRankData, initialRankData]);
 
   return {
     rankData,

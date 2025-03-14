@@ -19,7 +19,7 @@ export default function EntryPage({ initialGoal, userId }: {initialGoal: Goal | 
     createGoal,
     updateGoalText,
     refreshGoal
-  } = useGoal(initialGoal, userId);
+  } = useGoal(userId, initialGoal);
 
   const [goalText, setGoalText] = useState(initialGoal?.text || '');
   const [isSubmitting, setIsSubmitting] = useState(false);

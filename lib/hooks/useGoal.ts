@@ -4,7 +4,7 @@ import { type Schema } from '@/amplify/data/resource';
 
 export type Goal = Schema['Goal']['type'];
 
-export function useGoal(initialGoal: Goal | null = null, userId: string) {
+export function useGoal(userId: string, initialGoal: Goal | null = null) {
 
    // Helper function to calculate time remaining
    const calculateTimeRemaining = useCallback((goalWithTime: Goal | null): number => {

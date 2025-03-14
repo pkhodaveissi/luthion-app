@@ -14,7 +14,6 @@ interface AuthState {
 
 export function useAuth(initialUser: User | null = null): AuthState {
   const [user, setUser] = useState<User | null>(initialUser);
-  console.log('fuck auth', user, initialUser)
   // If we have initial user data, start with loading=false
   const [loading, setLoading] = useState(!initialUser);
   const [error, setError] = useState<Error | null>(null);

@@ -26,7 +26,7 @@ export default function RefinePage({ initialGoal, userId }: RefinePageProps) {
     isEditing,
     refreshGoal,
     resetEditing
-  } = useGoal(initialGoal, userId);
+  } = useGoal(userId, initialGoal);
 
   // Local state for the UI
   const [isSubmittingLock, setIsSubmittingLock] = useState(false);
