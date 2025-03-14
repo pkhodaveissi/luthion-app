@@ -39,7 +39,6 @@ export default function RefinePage({ initialGoal, userId }: RefinePageProps) {
         // No goal exists, go to entry page
         router.push('/entry');
       } else if (goal.status === 'committed') {
-        console.log('fuck useEffect', goal)
         // Goal is already committed
         router.push('/entry/committed');
       } else if (goal.status === 'reflected') {

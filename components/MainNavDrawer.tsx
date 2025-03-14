@@ -39,7 +39,6 @@ export default function MainNavDrawer() {
   }, [navOpen, toggleNav]);
 
   if (!navOpen) return null;
-  console.log('fuck: prevRoute', prevRoute)
   const menuItems = [
     { icon: CircleUser, muted: true, stroke: 1 },
     { icon: Tally5, muted: true, stroke: 1, onClick: () => {router.push("/rank"); toggleNav();} },

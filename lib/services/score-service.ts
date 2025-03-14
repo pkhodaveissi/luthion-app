@@ -214,7 +214,6 @@ static async updateHistoricalDailyScore(userId: string, date: Date, scoreDiffere
   static async updateWeeklyScore(weeklyScoreId: string, points: number): Promise<WeeklyScore> {
     try {
       const { data: existingScore } = await client.models.WeeklyScore.get({ id: weeklyScoreId });
-      console.log('fuck: weekly score', existingScore)
       if (!existingScore) {
         throw new Error('Weekly score not found');
       }
@@ -230,7 +229,6 @@ static async updateHistoricalDailyScore(userId: string, date: Date, scoreDiffere
         id: existingScore.id,
         score: newScore,
       });
-      console.log('fuck: weekly score: updted', updatedScore)
       
       if (!updatedScore) {
         throw new Error('Failed to update weekly score');

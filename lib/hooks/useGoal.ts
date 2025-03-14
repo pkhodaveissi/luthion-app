@@ -30,7 +30,6 @@ export function useGoal(userId: string, initialGoal: Goal | null = null) {
 
   // Load the current goal
   const loadGoal = useCallback(async () => {
-    console.log('fuck laodUser', userId)
     if (!userId) return;
 
     try {
@@ -55,7 +54,6 @@ export function useGoal(userId: string, initialGoal: Goal | null = null) {
       setError('User not authenticated');
       return null;
     }
-    console.log('fuck create', userId)
 
     try {
       setLoading(true);

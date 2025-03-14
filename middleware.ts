@@ -20,7 +20,6 @@ export async function middleware(request: NextRequest) {
   });
 
   if (authenticated) {
-    console.log('fuck not authenticated')
     return response;
   }
   return NextResponse.redirect(new URL("/login", request.url));

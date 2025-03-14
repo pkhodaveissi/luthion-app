@@ -16,7 +16,6 @@ export async function getInitialGoalData(userId: string): Promise<Goal | null> {
       },
       selectionSet: ['id', 'userId', 'text', 'status', 'createdAt', 'committedAt', 'lockedAt', 'reflectedAt', 'updatedAt', 'owner'],
     });
-    console.log('fuck initial ssr', goals)
     return goals[0] as Goal || null;
   } catch (error) {
     console.error('Server error getting initial goal data:', error);
@@ -34,8 +33,6 @@ export async function getInitialReflectionData(userId: string, limit: number = 7
       selectionSet: ['id', 'reflectedAt', 'userId', 'text', 'reflection.*', 'reflection.reflectionOption.*'],
       limit,
     });
-    // check: add secondary index for reflectedAt to sort on database level 
-    console.log('fuck initial ssr reflections', goalsWithReflections)
     return goalsWithReflections
   } catch (error) {
     console.error('Server error getting initial goal data:', error);

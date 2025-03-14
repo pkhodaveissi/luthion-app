@@ -40,7 +40,6 @@ export class ReflectionService {
         filter: { isActive: { eq: true } },
         limit: 100 // Get all active options
       });
-      console.log('fuck: refOptions', options)
       return options;
     } catch (error) {
       console.error('Error getting reflection options:', error);

@@ -69,7 +69,6 @@ export function useReflection(userId: string, initialReflections?: ReflectedGoal
       setError(null);
       
       const recentData = await ReflectionService.getRecentReflections(userId, limit);
-      console.log('fuck: last7 reflections - hook', recentData)
       
     
       const formattedReflections = formatReflections(recentData)

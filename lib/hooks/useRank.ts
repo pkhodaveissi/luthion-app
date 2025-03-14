@@ -32,6 +32,7 @@ function fillWeeklyProgress(data: Array<WeeklyProgressItem>): Array<WeeklyProgre
 export function useRank(userId: string, initialRankData?: RankPageData) {
   const [rankData, setRankData] = useState<RankPageData | null>(initialRankData || null);
   const [loading, setLoading] = useState(false);
+  const [partialLoading, setPartialLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load rank data
@@ -65,7 +66,7 @@ export function useRank(userId: string, initialRankData?: RankPageData) {
     if (!userId) return;
     
     try {
-      setLoading(true);
+      setPartialLoading(true);
       setError(null);
       // Update completed weeks
       await RankService.updateCompletedWeeks(userId);
@@ -81,7 +82,7 @@ export function useRank(userId: string, initialRankData?: RankPageData) {
       setError('Failed to load rank data');
       console.error(err);
     } finally {
-      setLoading(false);
+      setPartialLoading(false);
     }
   }, [userId]);
   // Calculate progress percentage within current tier
@@ -109,6 +110,7 @@ export function useRank(userId: string, initialRankData?: RankPageData) {
   return {
     rankData,
     loading,
+    partialLoading,
     error,
     refreshRankData: loadRankData,
     getProgressInTierPercentage
