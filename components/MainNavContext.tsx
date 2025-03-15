@@ -5,6 +5,7 @@ import { Hub } from 'aws-amplify/utils';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { generateClient } from 'aws-amplify/api';
 import type { Schema } from "@/amplify/data/resource";
+import { RankService } from "@/lib/services/rank-service";
 
 interface MainNavContextValue {
   navOpen: boolean;
@@ -29,12 +30,15 @@ Hub.listen('auth', async ({ payload }) => {
       console.log('user1', user, existingUsers)
       if (!existingUsers || existingUsers.length === 0) {
         // Create new user if doesn't exist
-        await client.models.User.create({
+        const {data: userData} = await client.models.User.create({
           cognitoSub: user.userId,
           email: user.signInDetails?.loginId || '',
           name: user.username,
           isGuest: false,
         });
+        if(userData?.id){
+          RankService.calculateAndUpdateRank(userData.id)
+        }
       }
 
     } catch (error) {

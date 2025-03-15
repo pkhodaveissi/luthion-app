@@ -42,6 +42,24 @@ const theme = createTheme({
         fontWeight: {
           value: '600',
         },
+        backgroundColor: colorObj.colors.surface,
+        color: colorObj.colors.text.primary,
+        borderColor: 'transparent',
+        _hover: {
+          color: colorObj.colors.text.primary,
+          backgroundColor: colorObj.colors.surface,
+          borderColor: colorObj.colors.border,
+        },
+        _active: {
+          color: colorObj.colors.text.primary,
+          backgroundColor: colorObj.colors.surface,
+          borderColor: colorObj.colors.border,
+        },
+        _focus: {
+          color: colorObj.colors.text.primary,
+          backgroundColor: colorObj.colors.surface,
+          borderColor: colorObj.colors.border,
+        },
         primary: {
           backgroundColor: colorObj.colors.surface,
           _hover: {
