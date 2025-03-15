@@ -75,14 +75,14 @@ export default function RankPageClient({ userId, initialRankData }: RankPageProp
         <div>
           <h3 className="text-left text-xl font-medium">This Week</h3>
           <div className="relative w-full h-4 bg-surface rounded-sm overflow-hidden mt-1">
-            <div className={`h-full bg-foreground transition-all duration-700 ${partialLoading ? 'animate-pulse' : ''}`} style={{ width: `${((rankData?.currentWeekScore || 200) / 280) * 100}%` }}></div>
+            <div className={`h-full bg-foreground transition-all duration-700 ${partialLoading ? 'animate-pulse' : ''}`} style={{ width: `${((partialLoading ? 200 : rankData?.currentWeekScore || 0) / 280) * 100}%` }}></div>
           </div>
           <p className="text-sm pb-3 pt-2">Current week’s progress as can see above <span className="font-bold">will become part of your rank once it’s completed.</span> It’s capped at 280.</p>
         </div>
         <div>
           <h3 className="text-left text-xl font-medium">Today</h3>
           <div className="relative w-full h-4 bg-surface rounded-sm overflow-hidden mt-1">
-              <div className={`h-full bg-foreground transition-all duration-700 ${partialLoading ? 'animate-pulse' : ''}`} style={{ width: `${((rankData?.todayScore || 30) / 40) * 100}%` }}></div>
+              <div className={`h-full bg-foreground transition-all duration-700 ${partialLoading ? 'animate-pulse' : ''}`} style={{ width: `${((partialLoading ? 30 : rankData?.todayScore|| 0 ) / 40) * 100}%` }}></div>
           </div>
           <p className="text-sm pb-3 pt-2">Today’s progress can be tracked above, it has a max of 40 and it will hit that point by successfully completing 8 activities. Each successful activity will contribute 5 scores to your progress.
             <span className="font-bold">
