@@ -17,6 +17,9 @@ const theme = createTheme({
       heading: {
         color: colorObj.colors.text.secondary,
       },
+      input: {
+        color: colorObj.colors.text.primary,
+      },
       authenticator: {
         router: {
           backgroundColor: { value: colorObj.colors.background },
@@ -27,7 +30,8 @@ const theme = createTheme({
       passwordfield: {
         button: {
           color: colorObj.colors.text.primary,
-        }
+        },
+        color: colorObj.colors.text.primary,
       },
       field: {
        label: {
