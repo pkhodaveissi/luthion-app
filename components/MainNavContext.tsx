@@ -37,7 +37,7 @@ Hub.listen('auth', async ({ payload }) => {
           isGuest: false,
         });
         if(userData?.id){
-          RankService.calculateAndUpdateRank(userData.id)
+          await RankService.calculateAndUpdateRank(userData.id)
         }
       }
 
