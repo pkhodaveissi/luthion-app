@@ -1,6 +1,6 @@
 // app/entry/committed/page.tsx
 import { getAppUserServer } from '@/lib/utils/amplify-server-utils';
-import { getInitialReflectionData, getInitialReflectionOptionData } from '@/lib/services/goal-service-ssr';
+import { getInitialReflectionData, getInitialReflectionOptionData, GoalWithReflectionData } from '@/lib/services/goal-service-ssr';
 import { redirect } from 'next/navigation';
 import Last7Client from './Last7Client'; // Import the client component
 
@@ -14,7 +14,7 @@ export default async function Last7Server() {
   }
   
   
-  let initialReflections = null;
+  let initialReflections: GoalWithReflectionData[] | null = null;
   const initialReflectionOptions =  await getInitialReflectionOptionData();
   // Fetch initial goal data
   if (userId) {

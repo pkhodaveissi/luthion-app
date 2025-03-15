@@ -14,10 +14,11 @@ import BlurContainer from "@/components/BlurContainer";
 import MainNavDrawer from "@/components/MainNavDrawer";
 import { ReflectionOption, useReflection } from "@/lib/hooks/useReflection";
 import { useScore } from "@/lib/hooks/useScore";
+import { GoalWithReflectionData } from "@/lib/services/goal-service-ssr";
 
 interface Last7PageProps {
   userId: string
-  initialReflections: any
+  initialReflections: GoalWithReflectionData[] | null
   initialReflectionOptions?: ReflectionOption[] | null
 }
 // Icon map for reflection types

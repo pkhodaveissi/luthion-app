@@ -1,5 +1,6 @@
 import { amplifyCookiesClient } from '@/lib/utils/amplify-server-utils';
 import { type Schema } from '@/amplify/data/resource';
+import { SelectionSet } from 'aws-amplify/api';
 
 type Goal = Schema['Goal']['type'];
 type ReflectionOption = Schema['ReflectionOption']['type'];
@@ -23,14 +24,27 @@ export async function getInitialGoalData(userId: string): Promise<Goal | null> {
   }
 }
 
-export async function getInitialReflectionData(userId: string, limit: number = 7) {
+// Define your selection set as a const array
+const selectionSet = [
+  'id', 
+  'reflectedAt', 
+  'userId', 
+  'text', 
+  'reflection.*', 
+  'reflection.reflectionOption.*'
+] as const;
+
+// Use SelectionSet to derive the type from your schema and selection set
+export type GoalWithReflectionData = SelectionSet<Schema['Goal']['type'], typeof selectionSet>;
+
+export async function getInitialReflectionData(userId: string, limit: number = 7): Promise<GoalWithReflectionData[] | null> {
   try {
-    // check: if we can use reflection-service
+    // check: if we can use reflection-serviced
     const { data: goalsWithReflections } = await amplifyCookiesClient.models.Goal.listGoalsByUserOrderedbyReflection({
       userId: userId,
     }, {
       sortDirection: 'ASC',
-      selectionSet: ['id', 'reflectedAt', 'userId', 'text', 'reflection.*', 'reflection.reflectionOption.*'],
+      selectionSet,
       limit,
     });
     return goalsWithReflections

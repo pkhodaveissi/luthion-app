@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ReflectedGoal, ReflectionService } from '@/lib/services/reflection-service';
+import { ReflectionService } from '@/lib/services/reflection-service';
 import { type Schema } from '@/amplify/data/resource';
 import { useScore } from './useScore';
 import { useRank } from './useRank';
+import { GoalWithReflectionData } from '../services/goal-service-ssr';
 
 export type ReflectionOption = Schema['ReflectionOption']['type'];
 type RecentReflection = {
@@ -17,7 +18,7 @@ type RecentReflection = {
 };
 
   // Format the data
-  const formatReflections = (reflections?: ReflectedGoal[]) => {
+  const formatReflections = (reflections?: GoalWithReflectionData[]) => {
     if (!reflections) {
       return []
     } 
@@ -33,12 +34,12 @@ type RecentReflection = {
     }))
   };
 
-export function useReflection(userId: string, initialReflections?: ReflectedGoal[], initialReflectionOptions?: ReflectionOption[] | null) {
+export function useReflection(userId: string, initialReflections?: GoalWithReflectionData[] | null, initialReflectionOptions?: ReflectionOption[] | null) {
   const { refreshScores } = useScore(userId);
   const { refreshRankData } = useRank(userId);
   
   const [reflectionOptions, setReflectionOptions] = useState<ReflectionOption[]>(initialReflectionOptions || []);
-  const formattedReflections = formatReflections(initialReflections)
+  const formattedReflections = formatReflections(initialReflections || [])
   const [recentReflections, setRecentReflections] = useState<RecentReflection[]>(formattedReflections);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +69,7 @@ export function useReflection(userId: string, initialReflections?: ReflectedGoal
       setLoading(true);
       setError(null);
       
-      const recentData = await ReflectionService.getRecentReflections(userId, limit);
+      const recentData = await ReflectionService.getRecentReflections(userId, limit) as GoalWithReflectionData[];
       
     
       const formattedReflections = formatReflections(recentData)
