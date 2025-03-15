@@ -19,7 +19,7 @@ export default function CommittedPageClient({ initialGoal, userId }: CommittedPa
   const router = useRouter();
   const { goal, error, refreshGoal } = useGoal(userId, initialGoal);
   const { reflectionOptions, reflectOnGoal } = useReflection(userId);
-  const { dailyScore, getActivitiesNeededForMax, isMaxedOut } = useScore();
+  const { dailyScore, getActivitiesNeededForMax, isMaxedOut } = useScore(userId);
   
   const [showOptions, setShowOptions] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

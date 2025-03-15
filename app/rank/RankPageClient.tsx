@@ -20,7 +20,7 @@ interface RankPageProps {
 export default function RankPageClient({ userId, initialRankData }: RankPageProps) {
   const router = useRouter();
   const { rankData, loading, getProgressInTierPercentage, partialLoading } = useRank(userId, initialRankData);
-  const { getActivitiesNeededForMax, isMaxedOut } = useScore();
+  const { getActivitiesNeededForMax, isMaxedOut } = useScore(userId);
 
   if (loading || !rankData) {
     return (
@@ -61,11 +61,12 @@ export default function RankPageClient({ userId, initialRankData }: RankPageProp
           ) : (
             <BarChart data={rankData?.weeklyProgress} barSize={16}>
               <XAxis dataKey="week" hide />
-              <YAxis domain={[0, 40]} tickCount={3} width={24} />
+              <YAxis type="number" domain={[0, 280]} ticks={[140, 280]} width={30} />
               <Bar dataKey="score" fill="#D9D9D9" background={{ fill: '#1C1C1C' }} radius={2} />
               <CartesianGrid strokeDasharray="2" horizontalCoordinatesGenerator={(props) => {
                 const step = (props.height - 4) / 4; // Divide height into 4 equal spaces
-                return Array.from({ length: 3 }, (_, i) => (i + 1) * step);
+                const array = Array.from({ length: 3 }, (_, i) => ((i + 1) * step) + 2);
+                return array;
               }} vertical={false} className="opacity-40" />
             </BarChart>
           )}

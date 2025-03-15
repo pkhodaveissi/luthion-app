@@ -27,9 +27,9 @@ export default function RootLayout({
         <MainNavProvider>
           <div className="w-full max-w-[512px] mx-auto">
             <ConfigureAmplify />
-            {children}</div>
+              {children}
+          </div>
         </MainNavProvider>
-        {/* <Navigation /> */}
       </body>
     </html>
   );

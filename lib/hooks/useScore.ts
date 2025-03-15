@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ScoreService } from '@/lib/services/score-service';
-import { useAuth } from '@/lib/hooks/useAuth';
 
-export function useScore() {
-  const { user } = useAuth();
+export function useScore(userId: string) {
   const [dailyScore, setDailyScore] = useState(0);
   const [weeklyScore, setWeeklyScore] = useState(0);
   const [dailyReflectionCount, setDailyReflectionCount] = useState(0);
@@ -12,14 +10,14 @@ export function useScore() {
 
   // Load score data
   const loadScores = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
     
     try {
       setLoading(true);
       setError(null);
       
       // Load daily score
-      const dailyScoreData = await ScoreService.getDailyScore(user.id);
+      const dailyScoreData = await ScoreService.getDailyScore(userId);
       if (dailyScoreData) {
         setDailyScore(dailyScoreData.score);
         setDailyReflectionCount(dailyScoreData.reflectionCount);
@@ -29,24 +27,25 @@ export function useScore() {
       }
       
       // Load weekly score
-      const weeklyScoreData = await ScoreService.getCurrentWeekScore(user.id);
+      const weeklyScoreData = await ScoreService.getCurrentWeekScore(userId);
       if (weeklyScoreData) {
         // check: why this wasn't updated
         setWeeklyScore(weeklyScoreData.score);
       } else {
         setWeeklyScore(0);
       }
+
     } catch (err) {
       setError('Failed to load scores');
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [userId]);
 
   // Add points to the daily score
   const addPoints = useCallback(async (points: number) => {
-    if (!user?.id) {
+    if (!userId) {
       setError('User not authenticated');
       return false;
     }
@@ -56,7 +55,7 @@ export function useScore() {
       setError(null);
       
       // Add points to daily score
-      await ScoreService.addDailyScore(user.id, points);
+      await ScoreService.addDailyScore(userId, points);
       
       // Reload scores
       await loadScores();
@@ -69,7 +68,7 @@ export function useScore() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, loadScores]);
+  }, [userId, loadScores]);
 
   // Get daily progress percentage
   const getDailyProgressPercentage = useCallback(() => {
@@ -91,11 +90,10 @@ export function useScore() {
 
   // Load scores on mount and when user changes
   useEffect(() => {
-    if (user?.id) {
+    if (userId) {
       loadScores();
     }
-  }, [user?.id, loadScores]);
-
+  }, [userId, loadScores]);
   return {
     dailyScore,
     weeklyScore,
