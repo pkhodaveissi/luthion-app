@@ -34,7 +34,7 @@ export default function RankPageClient({ userId, initialRankData }: RankPageProp
   return (
     <div className="grid grid-rows-[auto_1fr_auto] h-dvh bg-background text-foreground p-6">
       <div className="flex flex-col items-center text-center rounded-sm shadow-border px-6 pt-6">
-        <Image src={`/badges/${rankData?.rank}.svg`} alt="Rank Badge" width={110} height={95} className="mb-2" />
+        <Image src={`/badges/${rankData?.rank?.toLowerCase()}.svg`} alt="Rank Badge" width={110} height={95} className="mb-2" />
         <h1 className="text-3xl font-bold">{rankData!.rank}</h1>
         <div className="w-full max-w-md pb-2">
           <div className="flex justify-between text-sm text-text-secondary font-semibold">

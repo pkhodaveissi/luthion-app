@@ -18,7 +18,7 @@ export default async function GlobalHeader() {
   const initialRankData = await getRankPageData(userId);
   return (
     <header className="flex flex-col items-center mb-4">
-      <Image src={`/badges/${initialRankData.rank}.svg`} alt="Rank Badge" width={60} height={52} unoptimized />
+      <Image src={`/badges/${initialRankData.rank?.toLowerCase()}.svg`} alt="Rank Badge" width={60} height={52} unoptimized />
     </header>
   );
 }
