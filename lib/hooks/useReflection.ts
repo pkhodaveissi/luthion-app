@@ -100,12 +100,6 @@ export function useReflection(userId: string, initialReflections?: GoalWithRefle
         userId
       );
       
-      // Refresh scores and rank data
-      await refreshScores();
-      await refreshRankData();
-      
-      // Reload recent reflections
-      await loadRecentReflections();
       
       return reflection;
     } catch (err) {
@@ -115,7 +109,7 @@ export function useReflection(userId: string, initialReflections?: GoalWithRefle
     } finally {
       setLoading(false);
     }
-  }, [userId, refreshScores, refreshRankData, loadRecentReflections]);
+  }, [userId]);
 
   // Update an existing reflection
   const updateReflection = useCallback(async (reflectionId: string, newReflectionOptionId: string) => {

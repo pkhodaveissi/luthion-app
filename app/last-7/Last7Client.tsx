@@ -31,6 +31,7 @@ const iconMap: Record<string, JSX.Element> = {
 
 export default function Last7Page({ userId, initialReflections, initialReflectionOptions }: Last7PageProps) {
   const router = useRouter();
+  // check: loading state after updating a reflection
   const { recentReflections, reflectionOptions, updateReflection, loading } = useReflection(userId, initialReflections, initialReflectionOptions);
   const { dailyScore, getActivitiesNeededForMax, isMaxedOut } = useScore(userId);
   const [selectedEntry, setSelectedEntry] = useState<number | null>(null);

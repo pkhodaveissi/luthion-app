@@ -85,11 +85,11 @@ export class ReflectionService {
       });
 
       // 5. Update daily score
-      await ScoreService.addDailyScore(userId, option.score);
+      ScoreService.addDailyScore(userId, option.score);
 
       // 6. Update completed weeks and recalculate rank
-      await RankService.updateCompletedWeeks(userId);
-      await RankService.calculateAndUpdateRank(userId);
+      RankService.updateCompletedWeeks(userId);
+      RankService.calculateAndUpdateRank(userId);
 
       return reflection;
     } catch (error) {

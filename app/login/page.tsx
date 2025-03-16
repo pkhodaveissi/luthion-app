@@ -1,3 +1,5 @@
+// app/login/page.tsx
+
 "use client";
 import Login from '@/components/Login';
 import React from 'react'
