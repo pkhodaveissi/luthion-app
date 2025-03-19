@@ -1,9 +1,12 @@
 import { getAppUserServer } from '@/lib/utils/amplify-server-utils';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import EntryPageClient from './EntryPageClient';
 import { getInitialGoalData } from '@/lib/services/goal-service-ssr';
 import { redirect } from 'next/navigation';
-export default async function EntryPage() {
+import { getQueryClient } from '@/lib/utils/get-query-client';
 
+export default async function EntryPage() {
+  const queryClient = getQueryClient()
   let initialGoal = null;
   
   const user = (await getAppUserServer());
@@ -14,7 +17,12 @@ export default async function EntryPage() {
     return null;
   }
   if (user?.id) {
-    initialGoal = await getInitialGoalData(user.id);
+    initialGoal = await getInitialGoalData(user.id, 'entry');
   }
-  return <EntryPageClient initialGoal={initialGoal} userId={userId} />;
+    
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <EntryPageClient initialGoal={initialGoal} userId={userId} />
+      </HydrationBoundary>
+  );
 }

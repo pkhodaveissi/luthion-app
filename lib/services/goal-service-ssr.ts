@@ -8,14 +8,27 @@ type ReflectionOption = Schema['ReflectionOption']['type'];
  * Server-side functions for goal data
  * These are designed to be used in Server Components
  */
-export async function getInitialGoalData(userId: string): Promise<Goal | null> {
+export async function getInitialGoalData(
+  userId: string, 
+  context: 'entry' | 'refine' | 'committed' | 'full' = 'full'
+): Promise<Goal | null> {
   try {
+    // Define context-specific selection sets
+    const selectionSets = {
+      entry: ['id', 'userId', 'text', 'status', 'committedAt'] as const,
+      refine: ['id', 'userId', 'text', 'status', 'committedAt', 'lockedAt'] as const,
+      committed: ['id', 'userId', 'text', 'status'] as const,
+      full: ['id', 'userId', 'text', 'status', 'createdAt', 'committedAt', 'lockedAt', 'reflectedAt', 'updatedAt', 'owner'] as const
+    };
+    
+    const selectionSet = selectionSets[context];
+    
     const { data: goals } = await amplifyCookiesClient.models.Goal.list({
       filter: {
         userId: { eq: userId },
         or: [{ status: { eq: 'draft' } }, { status: { eq: 'committed' } }],
       },
-      selectionSet: ['id', 'userId', 'text', 'status', 'createdAt', 'committedAt', 'lockedAt', 'reflectedAt', 'updatedAt', 'owner'],
+      selectionSet,
     });
     return goals[0] as Goal || null;
   } catch (error) {
@@ -122,14 +135,3 @@ export async function getRankPageData(userId: string): Promise<RankPageData> {
   }
 }
 
-// const selectionSet = [
-//   'id', 
-//   'userRank.currentScore', 
-//   'userRank.rankTier.name', 
-//   'userRank.rankTier.nextRankName', 
-//   'userRank.rankTier.previousRankName', 
-//   'userRank.rankTier.minScore', 
-//   'userRank.rankTier.maxScore',
-//   'dailyScores.*'
-// ] as const;
-// type RankPageData = SelectionSet<Schema['User']['type'], typeof selectionSet>;

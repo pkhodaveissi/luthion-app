@@ -17,7 +17,7 @@ export default async function CommittedPageServer() {
   let initialGoal = null;
   // Fetch initial goal data
   if (userId) {
-    initialGoal = await getInitialGoalData(userId);
+    initialGoal = await getInitialGoalData(userId, 'committed');
   }
   
   // Redirect if no goal exists

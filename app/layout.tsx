@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
+import QueryProvider from '@/lib/providers/query-provider';
 import { MainNavProvider } from "@/components/MainNavContext";
 import ConfigureAmplify from "@/lib/utils/amplify-config";
 import "@/app/globals.css";
@@ -25,10 +26,12 @@ export default function RootLayout({
         className={`${ralewayFont.variable} antialiased bg-background text-white font-raleway h-dvh flex flex-col`}
       >
         <MainNavProvider>
-          <div className="w-full max-w-[512px] mx-auto">
-            <ConfigureAmplify />
+          <QueryProvider>
+            <div className="w-full max-w-[512px] mx-auto">
+              <ConfigureAmplify />
               {children}
-          </div>
+            </div>
+          </QueryProvider>
         </MainNavProvider>
       </body>
     </html>
